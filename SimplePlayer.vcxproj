@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debugging|x64">
+      <Configuration>Debugging</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Deployment|x64">
+      <Configuration>Deployment</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Testing|x64">
+      <Configuration>Testing</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Universal45|x64">
+      <Configuration>Universal45</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A8014C2E-FD2A-4F55-A9D9-E195EAE2DE1A}</ProjectGuid>
+    <RootNamespace>SimplePlayer</RootNamespace>
+    <Keyword>MakeFileProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Universal45|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Testing|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Deployment|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debugging|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debugging|x64'">
+    <OutDir>$(ProjectDir)Output\LLVM\$(Platform)\Debugging\</OutDir>
+    <IntDir>$(ProjectDir)Intermediate\LLVM\$(Platform)\Debugging\</IntDir>
+    <NMakeBuildCommandLine>python build45.py local45 Debugging</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>START CMD /C "ECHO Rebuild not supported! &amp;&amp; PAUSE"</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>START CMD /C "ECHO Clean not supported! &amp;&amp; PAUSE"</NMakeCleanCommandLine>
+    <NMakeOutput>SimplePlayer64.dll</NMakeOutput>
+    <NMakePreprocessorDefinitions>DEBUG;JUKEBOX_SDK;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Deployment|x64'">
+    <OutDir>$(ProjectDir)Output\LLVM\$(Platform)\Deployment\</OutDir>
+    <IntDir>$(ProjectDir)Intermediate\LLVM\$(Platform)\Deployment\</IntDir>
+    <NMakeBuildCommandLine>python build45.py local45 Deployment</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>START CMD /C "ECHO Rebuild not supported! &amp;&amp; PAUSE"</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>START CMD /C "ECHO Clean not supported! &amp;&amp; PAUSE"</NMakeCleanCommandLine>
+    <NMakeOutput>SimplePlayer64.dll</NMakeOutput>
+    <NMakePreprocessorDefinitions>NDEBUG;JUKEBOX_SDK;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Testing|x64'">
+    <OutDir>$(ProjectDir)Output\LLVM\$(Platform)\Testing\</OutDir>
+    <IntDir>$(ProjectDir)Intermediate\LLVM\$(Platform)\Testing\</IntDir>
+    <NMakeBuildCommandLine>python build45.py local45 Testing</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>START CMD /C "ECHO Rebuild not supported! &amp;&amp; PAUSE"</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>START CMD /C "ECHO Clean not supported! &amp;&amp; PAUSE"</NMakeCleanCommandLine>
+    <NMakeOutput>SimplePlayer64.dll</NMakeOutput>
+    <NMakePreprocessorDefinitions>DEBUG;JUKEBOX_SDK;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Universal45|x64'">
+    <OutDir>$(ProjectDir)Output\LLVM\$(Platform)\Deployment\</OutDir>
+    <IntDir>$(ProjectDir)Intermediate\LLVM\$(Platform)\Deployment\</IntDir>
+    <NMakeBuildCommandLine>python build45.py universal45</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine />
+    <NMakeCleanCommandLine />
+    <NMakeOutput>SimplePlayer.u45</NMakeOutput>
+    <NMakePreprocessorDefinitions>NDEBUG;JUKEBOX_SDK;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\API\Jukebox.h" />
+    <ClInclude Include="..\..\API\JukeboxTypes.h" />
+    <ClInclude Include="..\..\Tools\Libs\Jukebox\ShimABI\JukeboxABI.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="GUI\Output\gui.lua" />
+    <None Include="info.lua" />
+    <None Include="motherboard_def.lua" />
+    <None Include="GUI2D\device_2D.lua" />
+    <None Include="GUI2D\hdgui_2D.lua" />
+    <None Include="realtime_controller.lua" />
+    <None Include="Resources\English\texts.lua" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Tools\Libs\Jukebox\ShimABI\JukeboxABI.cpp" />
+    <ClCompile Include="JukeboxExports.cpp" />
+    <ClCompile Include="SimplePlayer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="README.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

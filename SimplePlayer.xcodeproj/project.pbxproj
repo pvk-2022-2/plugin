@@ -1,0 +1,320 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXFileReference section */
+		101C9A5D14C86C4A000DCA37 /* Jukebox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Jukebox.h; sourceTree = "<group>"; };
+		101C9A5E14C86C4A000DCA37 /* JukeboxTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JukeboxTypes.h; sourceTree = "<group>"; };
+		101C9AB414C86C4A000DCA37 /* JukeboxABI.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JukeboxABI.cpp; sourceTree = "<group>"; };
+		101C9AB514C86C4A000DCA37 /* JukeboxABI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JukeboxABI.h; sourceTree = "<group>"; };
+		10CA294A15ADB20600EFBA75 /* texts.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = texts.lua; sourceTree = "<group>"; };
+		2F3C606D20123EAE00919465 /* Panel_Front_3U.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Panel_Front_3U.png; sourceTree = "<group>"; };
+		2F3C606F20123EAF00919465 /* Knob_Blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Knob_Blue.png; sourceTree = "<group>"; };
+		2F3C607020123EAF00919465 /* Panel_Back_3U.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Panel_Back_3U.png; sourceTree = "<group>"; };
+		2F3C607120123EAF00919465 /* Knob_Orange.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Knob_Orange.png; sourceTree = "<group>"; };
+		2F3C607220123EAF00919465 /* Knob_Green.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Knob_Green.png; sourceTree = "<group>"; };
+		2F3C607320123EAF00919465 /* device_2D.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = device_2D.lua; sourceTree = "<group>"; };
+		2F8D44E11471076E001A9E8E /* info.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = info.lua; sourceTree = "<group>"; };
+		2F8D44E31471076E001A9E8E /* motherboard_def.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = motherboard_def.lua; sourceTree = "<group>"; };
+		2F8D44E41471076E001A9E8E /* realtime_controller.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = realtime_controller.lua; sourceTree = "<group>"; };
+		55A769F11E0033A700AB74CE /* hdgui_2D.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = hdgui_2D.lua; sourceTree = "<group>"; };
+		9172877F15B01CAC005FC0EB /* SimplePlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SimplePlayer.cpp; sourceTree = "<group>"; };
+		91ED40E1154070D2000B9DE4 /* build.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = build.py; sourceTree = "<group>"; };
+		91ED40E2154070D2000B9DE4 /* buildconfig.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = buildconfig.py; sourceTree = "<group>"; };
+		A82FA4F71536F55100C10BC3 /* build45.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = build45.py; sourceTree = "<group>"; };
+		F74F00FD159CC231000245A5 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		F74F00FE159CC231000245A5 /* JukeboxExports.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JukeboxExports.cpp; sourceTree = "<group>"; };
+		F74F0100159CC231000245A5 /* SimplePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimplePlayer.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* VerySimpleSampler */ = {
+			isa = PBXGroup;
+			children = (
+				A82FA4F71536F55100C10BC3 /* build45.py */,
+				101C9A5B14C86C4A000DCA37 /* JukeboxSDK */,
+				2F8D44E51471076E001A9E8E /* Resources */,
+				856641E71E02EFA600DC42ED /* GUI2D */,
+				101C9CBC14C882F8000DCA37 /* Scripts */,
+				10CA2A1415ADB27F00EFBA75 /* Source */,
+			);
+			name = VerySimpleSampler;
+			sourceTree = "<group>";
+		};
+		101C9A5B14C86C4A000DCA37 /* JukeboxSDK */ = {
+			isa = PBXGroup;
+			children = (
+				101C9A5C14C86C4A000DCA37 /* API */,
+				101C9AA914C86C4A000DCA37 /* Tools */,
+			);
+			name = JukeboxSDK;
+			path = ../..;
+			sourceTree = SOURCE_ROOT;
+		};
+		101C9A5C14C86C4A000DCA37 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				101C9A5D14C86C4A000DCA37 /* Jukebox.h */,
+				101C9A5E14C86C4A000DCA37 /* JukeboxTypes.h */,
+			);
+			path = API;
+			sourceTree = "<group>";
+		};
+		101C9AA914C86C4A000DCA37 /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				101C9AAA14C86C4A000DCA37 /* Build */,
+				101C9AB114C86C4A000DCA37 /* Libs */,
+			);
+			path = Tools;
+			sourceTree = "<group>";
+		};
+		101C9AAA14C86C4A000DCA37 /* Build */ = {
+			isa = PBXGroup;
+			children = (
+				91ED40E1154070D2000B9DE4 /* build.py */,
+				91ED40E2154070D2000B9DE4 /* buildconfig.py */,
+			);
+			path = Build;
+			sourceTree = "<group>";
+		};
+		101C9AB114C86C4A000DCA37 /* Libs */ = {
+			isa = PBXGroup;
+			children = (
+				101C9AB214C86C4A000DCA37 /* Jukebox */,
+			);
+			path = Libs;
+			sourceTree = "<group>";
+		};
+		101C9AB214C86C4A000DCA37 /* Jukebox */ = {
+			isa = PBXGroup;
+			children = (
+				101C9AB314C86C4A000DCA37 /* ShimABI */,
+			);
+			path = Jukebox;
+			sourceTree = "<group>";
+		};
+		101C9AB314C86C4A000DCA37 /* ShimABI */ = {
+			isa = PBXGroup;
+			children = (
+				101C9AB414C86C4A000DCA37 /* JukeboxABI.cpp */,
+				101C9AB514C86C4A000DCA37 /* JukeboxABI.h */,
+			);
+			path = ShimABI;
+			sourceTree = "<group>";
+		};
+		101C9CBC14C882F8000DCA37 /* Scripts */ = {
+			isa = PBXGroup;
+			children = (
+				2F8D44E11471076E001A9E8E /* info.lua */,
+				2F8D44E31471076E001A9E8E /* motherboard_def.lua */,
+				2F8D44E41471076E001A9E8E /* realtime_controller.lua */,
+			);
+			name = Scripts;
+			sourceTree = "<group>";
+		};
+		10CA294915ADB20600EFBA75 /* English */ = {
+			isa = PBXGroup;
+			children = (
+				10CA294A15ADB20600EFBA75 /* texts.lua */,
+			);
+			path = English;
+			sourceTree = "<group>";
+		};
+		10CA295215ADB20600EFBA75 /* Public */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Public;
+			sourceTree = "<group>";
+		};
+		10CA2A1415ADB27F00EFBA75 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				F74F00FD159CC231000245A5 /* Constants.h */,
+				F74F00FE159CC231000245A5 /* JukeboxExports.cpp */,
+				9172877F15B01CAC005FC0EB /* SimplePlayer.cpp */,
+				F74F0100159CC231000245A5 /* SimplePlayer.h */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		2F8D44E51471076E001A9E8E /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				10CA294915ADB20600EFBA75 /* English */,
+				10CA295215ADB20600EFBA75 /* Public */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		856641E71E02EFA600DC42ED /* GUI2D */ = {
+			isa = PBXGroup;
+			children = (
+				2F3C607320123EAF00919465 /* device_2D.lua */,
+				55A769F11E0033A700AB74CE /* hdgui_2D.lua */,
+				2F3C606F20123EAF00919465 /* Knob_Blue.png */,
+				2F3C607220123EAF00919465 /* Knob_Green.png */,
+				2F3C607120123EAF00919465 /* Knob_Orange.png */,
+				2F3C607020123EAF00919465 /* Panel_Back_3U.png */,
+				2F3C606D20123EAE00919465 /* Panel_Front_3U.png */,
+			);
+			path = GUI2D;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXLegacyTarget section */
+		2F8D44A9146D7DDA001A9E8E /* Universal 45 */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "build45.py universal45";
+			buildConfigurationList = 2F8D44AE146D7E1A001A9E8E /* Build configuration list for PBXLegacyTarget "Universal 45" */;
+			buildPhases = (
+			);
+			buildToolPath = python;
+			buildWorkingDirectory = "";
+			dependencies = (
+			);
+			name = "Universal 45";
+			passBuildSettingsInEnvironment = 0;
+			productName = "Universal 45";
+		};
+		2F8D452714711817001A9E8E /* Local 45 */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "build45.py local45 $CONFIGURATION";
+			buildConfigurationList = 2F8D452814711817001A9E8E /* Build configuration list for PBXLegacyTarget "Local 45" */;
+			buildPhases = (
+			);
+			buildToolPath = python;
+			buildWorkingDirectory = "";
+			dependencies = (
+			);
+			name = "Local 45";
+			passBuildSettingsInEnvironment = 0;
+			productName = "Universal 45";
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0920;
+			};
+			buildConfigurationList = 1DEB919308733D9F0010E9CD /* Build configuration list for PBXProject "SimplePlayer" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 08FB7794FE84155DC02AAC07 /* VerySimpleSampler */;
+			productRefGroup = 08FB7794FE84155DC02AAC07 /* VerySimpleSampler */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2F8D44A9146D7DDA001A9E8E /* Universal 45 */,
+				2F8D452714711817001A9E8E /* Local 45 */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB919408733D9F0010E9CD /* Debugging */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debugging;
+		};
+		1DEB919508733D9F0010E9CD /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Deployment;
+		};
+		2F8D44AA146D7DDA001A9E8E /* Debugging */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debugging;
+		};
+		2F8D44AB146D7DDA001A9E8E /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Deployment;
+		};
+		2F8D451114710D89001A9E8E /* Testing */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Testing;
+		};
+		2F8D451314710D89001A9E8E /* Testing */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Testing;
+		};
+		2F8D452914711817001A9E8E /* Debugging */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debugging;
+		};
+		2F8D452A14711817001A9E8E /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Deployment;
+		};
+		2F8D452B14711817001A9E8E /* Testing */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Testing;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB919308733D9F0010E9CD /* Build configuration list for PBXProject "SimplePlayer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB919408733D9F0010E9CD /* Debugging */,
+				2F8D451114710D89001A9E8E /* Testing */,
+				1DEB919508733D9F0010E9CD /* Deployment */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debugging;
+		};
+		2F8D44AE146D7E1A001A9E8E /* Build configuration list for PBXLegacyTarget "Universal 45" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2F8D44AA146D7DDA001A9E8E /* Debugging */,
+				2F8D451314710D89001A9E8E /* Testing */,
+				2F8D44AB146D7DDA001A9E8E /* Deployment */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debugging;
+		};
+		2F8D452814711817001A9E8E /* Build configuration list for PBXLegacyTarget "Local 45" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2F8D452914711817001A9E8E /* Debugging */,
+				2F8D452B14711817001A9E8E /* Testing */,
+				2F8D452A14711817001A9E8E /* Deployment */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debugging;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

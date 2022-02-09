@@ -1,0 +1,27 @@
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.0.0
+MinimumVisualStudioVersion = 14.0.0.0
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimplePlayer", "SimplePlayer.vcxproj", "{A8014C2E-FD2A-4F55-A9D9-E195EAE2DE1A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debugging|x64 = Debugging|x64
+		Deployment|x64 = Deployment|x64
+		Testing|x64 = Testing|x64
+		Universal45|x64 = Universal45|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A8014C2E-FD2A-4F55-A9D9-E195EAE2DE1A}.Debugging|x64.ActiveCfg = Debugging|x64
+		{A8014C2E-FD2A-4F55-A9D9-E195EAE2DE1A}.Debugging|x64.Build.0 = Debugging|x64
+		{A8014C2E-FD2A-4F55-A9D9-E195EAE2DE1A}.Deployment|x64.ActiveCfg = Deployment|x64
+		{A8014C2E-FD2A-4F55-A9D9-E195EAE2DE1A}.Deployment|x64.Build.0 = Deployment|x64
+		{A8014C2E-FD2A-4F55-A9D9-E195EAE2DE1A}.Testing|x64.ActiveCfg = Testing|x64
+		{A8014C2E-FD2A-4F55-A9D9-E195EAE2DE1A}.Testing|x64.Build.0 = Testing|x64
+		{A8014C2E-FD2A-4F55-A9D9-E195EAE2DE1A}.Universal45|x64.ActiveCfg = Universal45|x64
+		{A8014C2E-FD2A-4F55-A9D9-E195EAE2DE1A}.Universal45|x64.Build.0 = Universal45|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

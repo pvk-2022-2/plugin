@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="JukeboxAPI">
+      <UniqueIdentifier>{1b11f16e-fd1e-41a0-a7eb-fc9a9ec82ee6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts">
+      <UniqueIdentifier>{2e508efc-2d2d-473b-9afc-e91e1529e7af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tools">
+      <UniqueIdentifier>{58ac6962-cb8c-47ea-bda6-4d220e70f0f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tools\Libs">
+      <UniqueIdentifier>{2184e987-9938-4a8e-81da-d5b2ad889bf0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tools\Libs\Jukebox">
+      <UniqueIdentifier>{f7b3bf4d-dec4-4817-8c2a-baf316348b32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tools\Libs\Jukebox\ShimABI">
+      <UniqueIdentifier>{fedb07cd-3e87-4bcf-89ad-d6a65221541e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{fcafc8a3-4b2b-4b7a-b5d3-33ed0accbca9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\English">
+      <UniqueIdentifier>{fa7bca2a-5882-4c74-93d8-d2a2b2feb80c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GUI2D">
+      <UniqueIdentifier>{aeea9a8d-0293-4296-8535-a3a2e67e66f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GUI2D\Bitmaps">
+      <UniqueIdentifier>{03ab1d2e-5d64-465a-90b7-ef8d96fa3e17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Public">
+      <UniqueIdentifier>{d3660fa0-a636-401f-9c13-92d79497f42a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Tools\Libs\Jukebox\ShimABI\JukeboxABI.h">
+      <Filter>Tools\Libs\Jukebox\ShimABI</Filter>
+    </ClInclude>
+    <ClInclude Include="SimplePlayer.h" />
+    <ClInclude Include="StdInclude.h" />
+    <ClInclude Include="Constants.h" />
+    <ClInclude Include="Util\StaticVector.h" />
+    <ClInclude Include="..\..\API\Jukebox.h">
+      <Filter>JukeboxAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\API\JukeboxTypes.h">
+      <Filter>JukeboxAPI</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="info.lua">
+      <Filter>Scripts</Filter>
+    </None>
+    <None Include="motherboard_def.lua">
+      <Filter>Scripts</Filter>
+    </None>
+    <None Include="realtime_controller.lua">
+      <Filter>Scripts</Filter>
+    </None>
+    <None Include="Resources\English\texts.lua">
+      <Filter>Resources\English</Filter>
+    </None>
+    <None Include="GUI2D\device_2D.lua">
+      <Filter>GUI2D</Filter>
+    </None>
+    <None Include="GUI2D\hdgui_2D.lua">
+      <Filter>GUI2D</Filter>
+    </None>
+    <None Include="Resources\Public\Default.repatch">
+      <Filter>Resources\Public</Filter>
+    </None>
+    <None Include="Resources\Public\Quintuplet.repatch">
+      <Filter>Resources\Public</Filter>
+    </None>
+    <None Include="Resources\Public\Six over Four.repatch">
+      <Filter>Resources\Public</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="JukeboxExports.cpp" />
+    <ClCompile Include="..\..\Tools\Libs\Jukebox\ShimABI\JukeboxABI.cpp">
+      <Filter>Tools\Libs\Jukebox\ShimABI</Filter>
+    </ClCompile>
+    <ClCompile Include="SimplePlayer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="GUI2D\Knob_Blue.png">
+      <Filter>GUI2D\Bitmaps</Filter>
+    </Image>
+    <Image Include="GUI2D\Knob_Green.png">
+      <Filter>GUI2D\Bitmaps</Filter>
+    </Image>
+    <Image Include="GUI2D\Knob_Orange.png">
+      <Filter>GUI2D\Bitmaps</Filter>
+    </Image>
+    <Image Include="GUI2D\ONOFF maker x5 002.png">
+      <Filter>GUI2D\Bitmaps</Filter>
+    </Image>
+    <Image Include="GUI2D\Panel_Back_3U.png">
+      <Filter>GUI2D\Bitmaps</Filter>
+    </Image>
+    <Image Include="GUI2D\Panel_Folded_Back.png">
+      <Filter>GUI2D\Bitmaps</Filter>
+    </Image>
+    <Image Include="GUI2D\Panel_Folded_Front_BrushedMetal.png">
+      <Filter>GUI2D\Bitmaps</Filter>
+    </Image>
+    <Image Include="GUI2D\Panel_Front_3U.png">
+      <Filter>GUI2D\Bitmaps</Filter>
+    </Image>
+    <Image Include="GUI2D\PatchBrowseGroup.png">
+      <Filter>GUI2D\Bitmaps</Filter>
+    </Image>
+    <Image Include="GUI2D\PatchNameSurface.png">
+      <Filter>GUI2D\Bitmaps</Filter>
+    </Image>
+    <Image Include="GUI2D\Placeholder.png">
+      <Filter>GUI2D\Bitmaps</Filter>
+    </Image>
+    <Image Include="GUI2D\SharedCVJack.png">
+      <Filter>GUI2D\Bitmaps</Filter>
+    </Image>
+  </ItemGroup>
+</Project>
