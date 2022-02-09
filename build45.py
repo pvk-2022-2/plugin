@@ -21,14 +21,28 @@ OTHER_COMPILER_FLAGS = "-Wall"
 
 
 
-
-
-
 # Add the build directory to the python path to be able to find the imports below
 import os
 import sys
+
+# Add option for custom JUKEBOX_SDK_DIR, we must remove related args to please build
+args = sys.argv.copy()
+for arg in sys.argv:
+	if not "=" in arg:
+		continue
+
+	split = arg.split("=")
+	if not split[0].lower() == "sdk":
+		continue
+
+	JUKEBOX_SDK_DIR = split[1]
+	args.remove(arg)
+
+
 importPath = os.path.abspath(os.path.join(JUKEBOX_SDK_DIR, "Tools", "Build"))
 sys.path.append(importPath)
+
+
 
 # Propagate variables to the main build script
 import buildconfig
@@ -45,4 +59,4 @@ buildconfig.OTHER_COMPILER_FLAGS = OTHER_COMPILER_FLAGS
 
 # Start the main build script
 import build
-build.doBuild(sys.argv)
+build.doBuild(args)
