@@ -1,0 +1,2 @@
+# Plugin for mips-emulator
+-----------
