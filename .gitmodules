@@ -1,0 +1,3 @@
+[submodule "mips-emulator"]
+	path = mips-emulator
+	url = git@github.com:pvk-2022-2/mips-emulator.git
