@@ -99,6 +99,8 @@ CSimplePlayer::CSimplePlayer(TJBox_Float64 iSampleRate) :
 	TJBox_ObjectRef denominatorNoteCVRef = JBox_GetMotherboardObjectRef("/cv_inputs/denominator_note_cv");
 	fDenominatorNoteCVInputRef = JBox_MakePropertyRef(denominatorNoteCVRef, "value");
 	fDenominatorNoteCVConnectedRef = JBox_MakePropertyRef(denominatorNoteCVRef, "connected");
+
+	fTextOutRef = JBox_MakePropertyRef(fCustomPropertiesRef, "text_out_buffer");
 }
 
 void CSimplePlayer::HandleDiffs(const TJBox_PropertyDiff iPropertyDiffs[], TJBox_UInt32 iDiffCount)
@@ -247,6 +249,26 @@ void CSimplePlayer::PlayRange(const TPPQRange& iRange) {
 void CSimplePlayer::RenderBatch(const TJBox_PropertyDiff iPropertyDiffs[], TJBox_UInt32 iDiffCount)
 {
 	HandleDiffs(iPropertyDiffs, iDiffCount);
+
+	index++;
+	if(index % 1000 == 0) {
+		if((index / 1000) % 2) {
+			textbuffer[0] = 'A';
+			textbuffer[1] = 'M';
+			textbuffer[2] = 'O';
+			textbuffer[3] = 'N';
+			textbuffer[4] = 'G';
+		}else{
+			textbuffer[0] = 'S';
+			textbuffer[1] = 'U';
+			textbuffer[2] = 'S';
+			textbuffer[3] = 0;
+			textbuffer[4] = 0;
+		}
+
+
+		JBox_SetRTStringData(fTextOutRef, 100, textbuffer);
+	}
 
 	if (fIsBypassedByHost) {
 		// We don't have to do anything if the player is bypassed by the host

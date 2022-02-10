@@ -5,7 +5,7 @@ format_version = "2.0"
 custom_properties = jbox.property_set{
 	document_owner = {
 		properties = {
-
+			
 			OnOff = jbox.boolean{
 				property_tag = 1,
 				default = true,
@@ -40,6 +40,9 @@ custom_properties = jbox.property_set{
 	
 	rt_owner = {
 		properties = {
+			text_out_buffer = jbox.string{
+				max_size = 1024
+			},
 		}
 	},
 }

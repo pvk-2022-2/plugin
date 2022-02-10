@@ -1,53 +1,23 @@
 format_version="2.0"
 
 front = jbox.panel{
-
-
 	graphics = {
 		node = "Surface_Bg",
 	},
 	
 	widgets = {
-	
-		-------------------------------------------
-		-------------------------------------------
-		--- RootKeyOffset
-		-------------------------------------------
-
-		jbox.analog_knob{
-			graphics = {
-				node = "Surface_BeatNumerator"
-			},
-			value = "/custom_properties/beat_numerator",
+        jbox.custom_display {
+			graphics = { node = "Terminal" },
+			values = { "/custom_properties/text_out_buffer" },
+			display_width_pixels = 450,
+			display_height_pixels = 200,
+			draw_function = "draw_terminal",
 		},
-		jbox.zero_snap_knob{
-			graphics = {
-				node = "Surface_BeatDenominator"
-			},
-			value = "/custom_properties/beat_denominator",
-		},
-
         jbox.toggle_button{
             graphics = {
                 node = "OnOff",
             },
             value = "/custom_properties/OnOff",
-        },
-
-        jbox.patch_name{
-            graphics = {
-                node = "PatchNameSurface",
-            },
-            center = false,
-            fg_color = { 96, 96, 96 },
-            loader_alt_color = { 0, 0, 0 },
-            -- text_style = "Big bold LCD font",
-            text_style = "Arial medium font",
-        },
-        jbox.patch_browse_group{
-            graphics = {
-                node = "PatchBrowseGroup",
-            },
         },
 		
 	},		

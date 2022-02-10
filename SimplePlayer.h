@@ -30,6 +30,10 @@ class CSimplePlayer
     private: TJBox_PropertyRef fNumeratorNoteCVConnectedRef;
     private: TJBox_PropertyRef fDenominatorNoteCVInputRef;
     private: TJBox_PropertyRef fDenominatorNoteCVConnectedRef;
+    
+    private: TJBox_PropertyRef fTextOutRef;
+    private: TJBox_UInt8 textbuffer[101];
+    private: int index;
 
     private: bool fIsPlaying;
     private: bool fIsLooping;
