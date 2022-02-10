@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Terminal.h"
 #include "Jukebox.h"
 
 #include <utility>
@@ -31,9 +32,8 @@ class CSimplePlayer
     private: TJBox_PropertyRef fDenominatorNoteCVInputRef;
     private: TJBox_PropertyRef fDenominatorNoteCVConnectedRef;
     
-    private: TJBox_PropertyRef fTextOutRef;
-    private: TJBox_UInt8 textbuffer[101];
-    private: int index;
+    private: TJBox_UInt64 index;
+    private: Terminal* fTerminal;
 
     private: bool fIsPlaying;
     private: bool fIsLooping;

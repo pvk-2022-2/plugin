@@ -100,7 +100,7 @@ CSimplePlayer::CSimplePlayer(TJBox_Float64 iSampleRate) :
 	fDenominatorNoteCVInputRef = JBox_MakePropertyRef(denominatorNoteCVRef, "value");
 	fDenominatorNoteCVConnectedRef = JBox_MakePropertyRef(denominatorNoteCVRef, "connected");
 
-	fTextOutRef = JBox_MakePropertyRef(fCustomPropertiesRef, "text_out_buffer");
+	fTerminal = new Terminal();
 }
 
 void CSimplePlayer::HandleDiffs(const TJBox_PropertyDiff iPropertyDiffs[], TJBox_UInt32 iDiffCount)
@@ -250,24 +250,18 @@ void CSimplePlayer::RenderBatch(const TJBox_PropertyDiff iPropertyDiffs[], TJBox
 {
 	HandleDiffs(iPropertyDiffs, iDiffCount);
 
-	index++;
-	if(index % 1000 == 0) {
-		if((index / 1000) % 2) {
-			textbuffer[0] = 'A';
-			textbuffer[1] = 'M';
-			textbuffer[2] = 'O';
-			textbuffer[3] = 'N';
-			textbuffer[4] = 'G';
-		}else{
-			textbuffer[0] = 'S';
-			textbuffer[1] = 'U';
-			textbuffer[2] = 'S';
-			textbuffer[3] = 0;
-			textbuffer[4] = 0;
+	if(fIsPlaying) {
+		if(index % 50 == 0) {
+			fTerminal->Putch('A' + (char)((index / 1000) % 26));
 		}
 
+		if(index % 1000 == 0){
+			fTerminal->Putch('\n');
+			fTerminal->Putch('\n');
+			fTerminal->SendProperties();
+		}
 
-		JBox_SetRTStringData(fTextOutRef, 100, textbuffer);
+		index++;
 	}
 
 	if (fIsBypassedByHost) {
