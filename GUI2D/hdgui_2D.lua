@@ -9,8 +9,8 @@ front = jbox.panel{
         jbox.custom_display {
 			graphics = { node = "Terminal" },
 			values = { "/custom_properties/text_out_buffer" },
-			display_width_pixels = 450,
-			display_height_pixels = 200,
+			display_width_pixels = 360,
+			display_height_pixels = 180,
 			draw_function = "draw_terminal",
 		},
         jbox.toggle_button{
@@ -19,7 +19,6 @@ front = jbox.panel{
             },
             value = "/custom_properties/OnOff",
         },
-		
 	},		
 }
 
