@@ -21,7 +21,12 @@ The plugin is meant to handle:
 
 
 ## On Windows:
-in x64 native Developer Command Prompt:
+You must first build the UI using RE2DRender, which converts GUI2D to be compatible with Reason. 
+
+`RE2DRender <path to plugin\GUI2D\> <path to plugin\GUI\>`
+
+Then build the 45 in x64 native Developer Command Prompt:
+
 `python3 build45.py local45 Testing SDK="SDK path" (SDK is optional, default: ../..)`
 
 ## On Mac:

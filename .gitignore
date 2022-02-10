@@ -1,2 +1,3 @@
 *.plist
 Intermediate-llvm/
+GUI/*
