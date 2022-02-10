@@ -1,5 +1,19 @@
 format_version = "1.0"
 
+-- draw wrapper with top/left position instead of bounds, and optional font
+function draw_string(x, y, str, color, font)
+  font = font or "LCD font"
+  color = color or {r=205, g=205, b=205}
+
+  jbox_display.draw_text(
+    {left=x, top=y, right=x, bottom=y},
+    "left",
+    str,
+    font,
+    color
+  )
+end
+
 function draw_terminal(property_values, display_info, dirty_rect) 
   local width = display_info.width
 	local height = display_info.height
@@ -7,13 +21,13 @@ function draw_terminal(property_values, display_info, dirty_rect)
   local str = property_values[1]
   assert(str ~= nil)
 
-  jbox_display.draw_text(
-  {left=10, top=10, right=width, bottom=10}, "left",
-  "BRUH AMONGUS NO WAY",
-  "LCD font",{r=205, g=205, b=205})
+  -- Draw Header
+  jbox_display.draw_rect(
+    {left=0, top = 0, right=width, bottom=15}, -- bounds
+    {r=120, g=120, b=120})                     -- color
 
-  jbox_display.draw_text(
-  {left=10, top=40, right=width, bottom=40}, "left",
-  str,
-  "LCD font",{r=205, g=205, b=205})
+  draw_string(5, 7, "TERMINAL LETS GOOOO", 
+    {r=205, g=205, b=205}, "Big bold LCD font")
+
+  draw_string(20, 20, str)
 end
