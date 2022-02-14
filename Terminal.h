@@ -28,6 +28,11 @@ public:
   Terminal();
   void Putch(const char c);
   void Puts(const char *s);
+  void PutHexLen(TJBox_UInt64 iValue, TJBox_UInt64 iNibbles);
+  void PutHex(TJBox_UInt64 iValue);
+  void PutUInt(TJBox_UInt64 iValue);
+  void PutInt(TJBox_Int64 iValue);
+
   void SendProperties();
   void ScrollDown();
 };
