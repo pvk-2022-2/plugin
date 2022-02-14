@@ -76,3 +76,70 @@ void Terminal::Puts(const char *s) {
   // Null Terminate
   fTextBuffer[fBufferIndex] = 0; 
 }
+
+void Terminal::PutHexLen(TJBox_UInt64 iValue, TJBox_UInt64 iNibbles) {
+    Putch('0');
+    Putch('x');
+
+    for (TJBox_UInt64 i = 0; i < iNibbles; i++) {
+        const int k = (iNibbles - 1 - i) * 4;
+        const TJBox_UInt8 num = (iValue & (0xFUL << k)) >> k;
+        char c = '0' + num;
+
+        if (num >= 10) c = 'A' + num - 10;
+
+        Putch(c);
+    }
+}
+
+void Terminal::PutHex(TJBox_UInt64 iValue) {
+    // find largest nonzero nibble
+    TJBox_UInt64 nibbles = 16;
+    while (nibbles > 2 && !(iValue & (0xFUL << 4 * --nibbles)))
+        ;
+
+    PutHexLen(iValue, ++nibbles);
+}
+
+
+void Terminal::PutUInt(TJBox_UInt64 iValue) {
+    if (iValue == 0) {
+        Putch('0');
+        return;
+    }
+
+    char buf[21];
+    char* ptr = buf;
+
+    while (iValue != 0) {
+        TJBox_UInt8 rem = iValue % 10;
+        *ptr = '0' + rem;
+        ++ptr;
+        iValue /= 10;
+    }
+
+    *ptr = '\0';
+
+    // Reverse string
+    char* begin = buf;
+    char* end = ptr - 1;
+    while (begin < end) {
+        char tmp = *begin;
+        *begin = *end;
+        *end = tmp;
+        ++begin;
+        --end;
+    }
+
+    Puts(buf);
+}
+
+void Terminal::PutInt(TJBox_Int64 iValue) {
+  if (iValue < 0) {
+      Putch('-');
+      PutUInt(-iValue);
+      return;
+  }
+
+  PutUInt(iValue);
+}
