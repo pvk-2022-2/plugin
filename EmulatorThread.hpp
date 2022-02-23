@@ -17,7 +17,7 @@ enum class EThreadState {
 class CEmulatorThread {
     public:
         // PC mask for successful execution
-        const uint32_t kFinishedExecMask = 0x0F000000;
+        const uint32_t kFinishedExecMask = 0x00F00000;
 
         CEmulatorThread(uint32_t iStackAddress) : fStackAddress(iStackAddress), fState(EThreadState::eError) {};
         CEmulatorThread() : CEmulatorThread(0) {};
@@ -28,6 +28,7 @@ class CEmulatorThread {
 
         bool IsRunning() { return fState == EThreadState::eRunning; }
         bool HasErrored() {return fState == EThreadState::eError; }
+        bool HasFinished() {return fState == EThreadState::eFinished; }
 
         const RegisterFile& GetRegisterFile() { return fRegisterFile; }
 

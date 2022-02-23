@@ -33,6 +33,8 @@ class CEmulatorHost {
 
     private:        
         uint64_t ExecuteEvents(uint64_t iStepCount);
+        uint64_t ExecuteMain(uint64_t iStepCount);
+        bool StartNextEvent();
 
         RuntimeStaticMemory<CMMIO> fMemory;
         CEmulatorThread fMainThread;  // Registerfile to be used for main
