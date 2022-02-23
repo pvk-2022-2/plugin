@@ -7,6 +7,7 @@ SOURCE_FILES = [
 
 # List any extra include directories for clang. Relative and absolute paths are allowed
 INCLUDE_DIRS = [
+		"./mips-emulator/include/"
 	]
 
 # Path to the Jukebox SDK directory. A relative or an absolute path is allowed

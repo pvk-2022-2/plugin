@@ -84,7 +84,8 @@ CSimplePlayer::CSimplePlayer(TJBox_Float64 iSampleRate) :
 	fSampleRate(iSampleRate),
 	fLastNumeratorNote(kInvalidNoteNumber),
 	fLastDenominatorNote(kInvalidNoteNumber),
-	fLastPosition(0)
+	fLastPosition(0),
+	fHost(iSampleRate, 128)
 {
 
 	fCustomPropertiesRef = JBox_GetMotherboardObjectRef("/custom_properties");
@@ -100,7 +101,7 @@ CSimplePlayer::CSimplePlayer(TJBox_Float64 iSampleRate) :
 	fDenominatorNoteCVInputRef = JBox_MakePropertyRef(denominatorNoteCVRef, "value");
 	fDenominatorNoteCVConnectedRef = JBox_MakePropertyRef(denominatorNoteCVRef, "connected");
 
-	fTerminal = new Terminal();
+	index = 0;
 }
 
 void CSimplePlayer::HandleDiffs(const TJBox_PropertyDiff iPropertyDiffs[], TJBox_UInt32 iDiffCount)
@@ -251,14 +252,8 @@ void CSimplePlayer::RenderBatch(const TJBox_PropertyDiff iPropertyDiffs[], TJBox
 	HandleDiffs(iPropertyDiffs, iDiffCount);
 
 	if(fIsPlaying) {
-		if(index % 50 == 0) {
-			fTerminal->Putch('A' + (char)((index / 1000) % 26));
-		}
-
 		if(index % 1000 == 0){
-			fTerminal->Putch('\n');
-			fTerminal->Putch('\n');
-			fTerminal->SendProperties();
+			fHost.ProcessBatch(iPropertyDiffs, iDiffCount);
 		}
 
 		index++;
