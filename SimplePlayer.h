@@ -1,8 +1,9 @@
 #pragma once
 
-#include "Terminal.h"
+#include "EmulatorHost.hpp"
 #include "Jukebox.h"
 
+#include <memory>
 #include <utility>
 
 typedef std::pair<std::int64_t, std::int64_t> TPPQRange;
@@ -32,8 +33,8 @@ class CSimplePlayer
     private: TJBox_PropertyRef fDenominatorNoteCVInputRef;
     private: TJBox_PropertyRef fDenominatorNoteCVConnectedRef;
     
-    private: TJBox_UInt64 index;
-    private: Terminal* fTerminal;
+    private: TJBox_UInt64 index = 0;
+    private: CEmulatorHost fHost;
 
     private: bool fIsPlaying;
     private: bool fIsLooping;
