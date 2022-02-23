@@ -85,7 +85,7 @@ CSimplePlayer::CSimplePlayer(TJBox_Float64 iSampleRate) :
 	fLastNumeratorNote(kInvalidNoteNumber),
 	fLastDenominatorNote(kInvalidNoteNumber),
 	fLastPosition(0),
-	fHost(iSampleRate, 128)
+	fHost(iSampleRate, 0x1000)
 {
 
 	fCustomPropertiesRef = JBox_GetMotherboardObjectRef("/custom_properties");
@@ -252,7 +252,7 @@ void CSimplePlayer::RenderBatch(const TJBox_PropertyDiff iPropertyDiffs[], TJBox
 	HandleDiffs(iPropertyDiffs, iDiffCount);
 
 	if(fIsPlaying) {
-		if(index % 1000 == 0){
+		if(index % 250 == 0){
 			fHost.ProcessBatch(iPropertyDiffs, iDiffCount);
 		}
 

@@ -32,9 +32,6 @@ class CSimplePlayer
     private: TJBox_PropertyRef fNumeratorNoteCVConnectedRef;
     private: TJBox_PropertyRef fDenominatorNoteCVInputRef;
     private: TJBox_PropertyRef fDenominatorNoteCVConnectedRef;
-    
-    private: TJBox_UInt64 index = 0;
-    private: CEmulatorHost fHost;
 
     private: bool fIsPlaying;
     private: bool fIsLooping;
@@ -47,5 +44,8 @@ class CSimplePlayer
     private: std::uint8_t fLastNumeratorNote;
     private: std::uint8_t fLastDenominatorNote;
 	private: std::int64_t fLastPosition;
+
+    private: TJBox_UInt64 index = 0;
+    private: CEmulatorHost fHost;
 };
 

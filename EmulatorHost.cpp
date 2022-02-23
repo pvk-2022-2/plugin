@@ -3,7 +3,7 @@
 
 CEmulatorHost::CEmulatorHost(TJBox_Float64 iSampleRate, TJBox_UInt64 iMemorySize) : 
 	fSampleRate(iSampleRate), 
-	fMemory(iMemorySize, this), 
+	fMemory(iMemorySize, make_shared<CMMIO>(this)), 
 	fEventQueue(10)
 {
 
