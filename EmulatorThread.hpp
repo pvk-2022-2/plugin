@@ -3,7 +3,7 @@
 #include "mips-emulator/runtime_static_memory.hpp"
 #include "mips-emulator/executor.hpp"
 
-#include "Events.hpp"
+#include "EventQueue.hpp"
 
 using namespace mips_emulator;
 using namespace std;
@@ -23,7 +23,7 @@ class CEmulatorThread {
         CEmulatorThread() : CEmulatorThread(0) {};
 
         void Start(uint32_t iAddress);
-        void Start(const SEvent& iEvent);
+        void Start(const CEventQueue::SEvent& iEvent);
         void Kill();
 
         bool IsRunning() { return fState == EThreadState::eRunning; }

@@ -1,5 +1,5 @@
 #include "EmulatorHost.hpp"
-#include "MMIO.h"
+#include "UserIO.h"
 #include "Constants.h"
 
 CEmulatorHost* CEmulatorHost::CreateFromProgram(TJBox_Value iProgramString) {
@@ -21,7 +21,7 @@ CEmulatorHost* CEmulatorHost::CreateFromProgram(TJBox_Value iProgramString) {
 
 CEmulatorHost::CEmulatorHost(TJBox_UInt64 iMemorySize, uint32_t iEntryPoint) :  
 	fMemory(iMemorySize, make_shared<CMMIO>(this)), 
-	fEventQueue(10)
+	fEventManager(10)
 {
 	// Set Property References
 	fCustomPropertiesRef = JBox_GetMotherboardObjectRef("/custom_properties");
@@ -33,6 +33,14 @@ bool CEmulatorHost::HandleMMIOStore(uint32_t iAddress, uint32_t iValue) {
 	switch (MMIO_INDEX(iAddress))
 	{
 	
+	case MMIO_INDEX(MMIO_REGISTER_EVENT): {
+		const uint32_t eventID = EVENT_PARSE_ID(iValue);
+		const uint32_t eventAddress = EVENT_PARSE_ADDRESS(iValue);
+
+		fEventManager.SetEventVector(eventID, eventAddress);
+		break;
+	}
+
 	// TODO IMPLEMENT PUTS WITHOUT MEMORY LEAK
 	case MMIO_INDEX(MMIO_PUTCHAR): {
 		if(iValue != 0) // AVOID KILLING THE TERMINAL
@@ -65,8 +73,8 @@ bool CEmulatorHost::HandleMMIORead(uint32_t iAddress, uint32_t& oValue) {
 // Returns false if event queue is empty.
 bool CEmulatorHost::StartNextEvent() {
 	// Grab next from queue if there is one
-	SEvent event = {0, 0 ,0, 0, 0};
-	if (!fEventQueue.Pop(event)) 
+	CEventQueue::SEvent event;
+	if (!fEventManager.GetNextEvent(event)) 
 		return false;
 
 	fEventThread.Start(event);

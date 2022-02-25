@@ -1,5 +1,5 @@
 #pragma once
-#include "MMIO.h"
+#include "UserIO.h"
 
 // Use template to deal with cross referencing
 template<typename CHost>

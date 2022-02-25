@@ -6,7 +6,7 @@
 #include "mips-emulator/runtime_static_memory.hpp"
 #include "mips-emulator/instruction.hpp"
 
-#include "EventQueue.hpp"
+#include "EventManager.hpp"
 #include "EmulatorThread.hpp"
 #include "Terminal.h"
 
@@ -42,7 +42,7 @@ class CEmulatorHost {
         CEmulatorThread fMainThread;  // Registerfile to be used for main
         CEmulatorThread fEventThread; // Registerfile used by the current event
 
-        CEventQueue fEventQueue;
+        CEventManager fEventManager;
         Terminal fTerminal;
 
         uint32_t index = 0; // TEMPORARY INDEX FOR ARTIFICIAL STEP

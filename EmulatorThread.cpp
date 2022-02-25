@@ -10,7 +10,7 @@ void CEmulatorThread::Start(uint32_t iAddress) {
     fState = EThreadState::eRunning;
 }
 
-void CEmulatorThread::Start(const SEvent& iEvent) {
+void CEmulatorThread::Start(const CEventQueue::SEvent& iEvent) {
     Start(iEvent.fAddress);
 
     fRegisterFile.set_unsigned(RegisterName::e_a0, iEvent.fA0);
