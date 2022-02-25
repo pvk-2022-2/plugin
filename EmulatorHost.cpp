@@ -1,20 +1,31 @@
 #include "EmulatorHost.hpp"
 #include "MMIO.h"
+#include "Constants.h"
 
-CEmulatorHost::CEmulatorHost(TJBox_Float64 iSampleRate, TJBox_UInt64 iMemorySize) : 
-	fSampleRate(iSampleRate), 
+CEmulatorHost* CEmulatorHost::CreateFromProgram(TJBox_Value iProgramString) {
+	uint32_t bufsize = JBox_GetStringLength(iProgramString);
+	vector<uint8_t> content = DecodeParameterString(iProgramString);
+	// TEMPORARY HEX DEOCODER
+	
+	// TODO Load elf, replace buf with memory content
+	uint32_t memsize = 0x10000; 
+	auto emulator = new CEmulatorHost(memsize, 0);
+
+	// Put result into memory
+	for(int i = 0; i < bufsize; i++)
+		emulator->fMemory.get_memory()[i] = (uint8_t)content[i];
+
+	return emulator;
+}
+
+
+CEmulatorHost::CEmulatorHost(TJBox_UInt64 iMemorySize, uint32_t iEntryPoint) :  
 	fMemory(iMemorySize, make_shared<CMMIO>(this)), 
 	fEventQueue(10)
 {
-	fMainThread.Start(0x100);
-
-	uint32_t program[] = {0x00842026, 0x248400ff, 0x00042600, 0x24050041, 0xac850100, 0x2405006d, 0xac850100, 0x2405006f, 0xac850100, 0x2405006e, 0xac850100, 0x24050067, 0xac850100, 0x2405000a, 0xac850100, 0x08000000 | (0x00F00000 >> 2)};
-	for (int i = 0; i < sizeof(program)/4; i++)
-		fMemory.store(i * 4, program[i]);
-
-	uint32_t fib[] = {0x00842026, 0x248400ff, 0x00042600, 0x2405002c, 0x24060020, 0x24110001, 0x2409000f, 0xac910120, 0x02309021, 0x00118021, 0x00128821, 0xac850100, 0xac860100, 0x25080001, 0x1509fff8, 0x00421025, 0x03e00008};
-	for (int i = 0; i < sizeof(fib)/4; i++)
-		fMemory.store((i * 4) + 0x100, fib[i]);
+	// Set Property References
+	fCustomPropertiesRef = JBox_GetMotherboardObjectRef("/custom_properties");
+	fMainThread.Start(iEntryPoint);
 }
 
 bool CEmulatorHost::HandleMMIOStore(uint32_t iAddress, uint32_t iValue) {
@@ -93,15 +104,18 @@ uint64_t CEmulatorHost::ExecuteMain(uint64_t iStepCount) {
 }
 
 void CEmulatorHost::ProcessBatch(const TJBox_PropertyDiff iPropertyDiffs[], TJBox_UInt32 iDiffCount) {
+	if(index++ % 250 != 0) return;
+
 	// FIND AND ADD EVENTS
 
 	// RUN INSTRUCTIONS
 	uint64_t steps = 100;
+
 	steps = ExecuteEvents(steps);
 
 	// Run remaining instructions on the main thread
 	steps = ExecuteMain(steps);
-
+	
 	// POSTPROCESS BATCH
 	fTerminal.SendProperties();
 }

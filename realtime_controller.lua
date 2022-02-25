@@ -3,6 +3,7 @@ format_version = "1.0"
 rtc_bindings = {
     { source = "/environment/system_sample_rate", dest = "/global_rtc/init_instance" },
     { source = "/environment/instance_id", dest = "/global_rtc/init_instance" },
+    { source = "/custom_properties/program", dest = "/global_rtc/init_instance" }
 }
 
 
@@ -11,8 +12,9 @@ global_rtc = {
     init_instance = function (source_property_path, new_value)
         local sample_rate = jbox.load_property("/environment/system_sample_rate")
         local instance_id = jbox.load_property("/environment/instance_id")
+        local program = jbox.load_property("/custom_properties/program")
 
-        local new_no = jbox.make_native_object_rw("Instance", {sample_rate, instance_id})
+        local new_no = jbox.make_native_object_rw("Instance", {sample_rate, instance_id, program})
         jbox.store_property("/custom_properties/instance", new_no);
     end,
 }

@@ -84,8 +84,7 @@ CSimplePlayer::CSimplePlayer(TJBox_Float64 iSampleRate) :
 	fSampleRate(iSampleRate),
 	fLastNumeratorNote(kInvalidNoteNumber),
 	fLastDenominatorNote(kInvalidNoteNumber),
-	fLastPosition(0),
-	fHost(iSampleRate, 0x1000)
+	fLastPosition(0)
 {
 
 	fCustomPropertiesRef = JBox_GetMotherboardObjectRef("/custom_properties");
@@ -250,14 +249,6 @@ void CSimplePlayer::PlayRange(const TPPQRange& iRange) {
 void CSimplePlayer::RenderBatch(const TJBox_PropertyDiff iPropertyDiffs[], TJBox_UInt32 iDiffCount)
 {
 	HandleDiffs(iPropertyDiffs, iDiffCount);
-
-	if(fIsPlaying) {
-		if(index % 250 == 0){
-			fHost.ProcessBatch(iPropertyDiffs, iDiffCount);
-		}
-
-		index++;
-	}
 
 	if (fIsBypassedByHost) {
 		// We don't have to do anything if the player is bypassed by the host

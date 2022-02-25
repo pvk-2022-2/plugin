@@ -29,6 +29,10 @@ custom_properties = jbox.property_set{
 				ui_name = jbox.ui_text("text_BeatDenominator"),
 				ui_type = jbox.ui_linear({min=1, max=16, units={{decimals=0}}}),
 			},
+			program = jbox.string { -- string that contains a program to be loaded
+				default = "",
+				property_tag = 1000
+			},
 		},
 	},
 

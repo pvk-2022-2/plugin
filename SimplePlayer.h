@@ -44,8 +44,5 @@ class CSimplePlayer
     private: std::uint8_t fLastNumeratorNote;
     private: std::uint8_t fLastDenominatorNote;
 	private: std::int64_t fLastPosition;
-
-    private: TJBox_UInt64 index = 0;
-    private: CEmulatorHost fHost;
 };
 

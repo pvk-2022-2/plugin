@@ -1,7 +1,7 @@
 #include "StdInclude.h"
 #include "Jukebox.h"
 #include <cstring>
-#include "SimplePlayer.h"
+#include "EmulatorHost.hpp"
 
 /**
  * @brief	This is our entry point when we're calling jbox.make_native_object_rw from realtime_controller.lua.
@@ -14,15 +14,15 @@ void* JBox_Export_CreateNativeObject(const char iOperation[], const TJBox_Value 
 	JBOX_TRACE("CreateNativeObject");
 	JBOX_TRACE(iOperation);
 
-	JBOX_ASSERT(iCount == 2);
-	TJBox_Value instanceIDValue = JBox_MakeNumber(JBox_GetNumber(iParams[0]));
+	JBOX_ASSERT(iCount == 3);
+	TJBox_Value instanceIDValue = JBox_MakeNumber(JBox_GetNumber(iParams[1]));
 	TJBox_Value array[1];
 	array[0] = instanceIDValue;
 	JBOX_TRACEVALUES("instance ID = ^0", array, 1);
 
 	const TJBox_Float64 sampleRate = JBox_GetNumber(iParams[0]);
 
-	return new CSimplePlayer(sampleRate);
+	return CEmulatorHost::CreateFromProgram(iParams[2]);
 }
 
 /** 
@@ -32,6 +32,6 @@ void JBox_Export_RenderRealtime(void* privateState, const TJBox_PropertyDiff iPr
 
 	JBOX_ASSERT(privateState != nullptr);
 
-	CSimplePlayer* pi = static_cast<CSimplePlayer*>(privateState);
-	pi->RenderBatch(iPropertyDiffs, iDiffCount);
+	CEmulatorHost* pi = static_cast<CEmulatorHost*>(privateState);
+	pi->ProcessBatch(iPropertyDiffs, iDiffCount);
 }

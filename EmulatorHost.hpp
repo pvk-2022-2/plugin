@@ -10,6 +10,7 @@
 #include "EmulatorThread.hpp"
 #include "Terminal.h"
 
+#include "ProgramDecoder.hpp"
 #include "EmulatorMMIO.hpp"
 
 #include "Jukebox.h"
@@ -22,8 +23,8 @@ using namespace mips_emulator;
 class CEmulatorHost {
     using CMMIO = CEmulatorMMIO<CEmulatorHost>;
     public:
-        CEmulatorHost(TJBox_Float64 iSampleRate, size_t iMemorySize);
-        void InitMemory();
+        CEmulatorHost(TJBox_UInt64 iMemorySize, uint32_t iEntryPoint);
+        [[nodiscard]] static CEmulatorHost* CreateFromProgram(TJBox_Value iProgramString);
 
         Terminal& GetTerminal() { return fTerminal; };
 
@@ -34,6 +35,7 @@ class CEmulatorHost {
     private:        
         uint64_t ExecuteEvents(uint64_t iStepCount);
         uint64_t ExecuteMain(uint64_t iStepCount);
+        bool MustLoadProgram(); 
         bool StartNextEvent();
 
         RuntimeStaticMemory<CMMIO> fMemory;
@@ -43,5 +45,8 @@ class CEmulatorHost {
         CEventQueue fEventQueue;
         Terminal fTerminal;
 
-        TJBox_Float64 fSampleRate;
+        uint32_t index = 0; // TEMPORARY INDEX FOR ARTIFICIAL STEP
+
+        // JBox property references
+        TJBox_ObjectRef fCustomPropertiesRef;
 };

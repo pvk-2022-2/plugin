@@ -16,6 +16,25 @@ The plugin is meant to handle:
     - Whole, half, quarter notes
     - Button presses
 
+# Loading Programs
+
+Programs are loaded from the "program" string property. Since strings are null terminated, they are currently ecoded using hex. Note that the Hex in the Values field in each repatch file, is also in hex, so there are two layers of hex. Anyhow, here's a script that converts a MARS Hex output into a .repatch string.
+
+```py
+import sys
+
+file = open(sys.argv[1])
+lines = file.readlines()
+
+lilend = ""
+for l in lines:
+    lilend += bytes.fromhex(l)[::-1].hex()
+
+def hexify(s):
+    return "".join('{:02x}'.format(ord(c)) for c in s)
+
+print(hexify(lilend.upper()))
+```
 
 # Building
 

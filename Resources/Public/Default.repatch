@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<JukeboxPatch version="2.0"  deviceProductID="se.kth.mipsemu"  deviceVersion="1.0d1" >
+    <DeviceNameInEnglish>
+        Mips Emulator
+    </DeviceNameInEnglish>
+    <Properties>
+        <Object name="custom_properties" >
+            <Value property="program"  type="string" >32363230383430304646303038343234303032363034303032433030303532343041303030363234303130303131323430463030303932343230303139314143323139303330303232313830313130303231383831323030303030313835414330303031383641433031303030383235463846463039313532353130343230303038303045303033</Value>
+        </Object>
+    </Properties>
+</JukeboxPatch>

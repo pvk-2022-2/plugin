@@ -14,3 +14,5 @@ const std::uint8_t kInvalidNoteNumber = 128;
 const TJBox_Tag kOnOffTag = 1;
 const TJBox_Tag kNumeratorTag = 101;
 const TJBox_Tag kDenominatorTag = 102;
+
+const TJBox_Tag kProgramTag = 1000;
