@@ -1,6 +1,31 @@
 #include "NoteHelper.hpp"
 #include "UserIO.h"
 
+void SendNoteOffEvent(uint8_t iNoteNumber, uint16_t iFrameIndex)
+{
+	if(iNoteNumber & 0x80) 
+		return;
+
+	TJBox_NoteEvent event;
+	event.fNoteNumber = iNoteNumber;
+	event.fVelocity = 0;
+	event.fAtFrameIndex = iFrameIndex;
+	JBox_OutputNoteEvent(event);
+}
+
+void SendNoteOnEvent(uint8_t iNoteNumber, uint8_t iVelocity, uint16_t iFrameIndex)
+{
+	if(iNoteNumber & 0x80) 
+		return;
+
+	TJBox_NoteEvent event;
+	event.fNoteNumber = iNoteNumber;
+	event.fVelocity = iVelocity;
+	event.fAtFrameIndex = iFrameIndex;
+	JBox_OutputNoteEvent(event);
+}
+
+
 CNoteHelper::CNoteHelper() {
     fNoteStates = JBox_GetMotherboardObjectRef("/note_states");
 }

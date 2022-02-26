@@ -11,6 +11,7 @@
 
 #include "Terminal.h"
 #include "NoteHelper.hpp"
+#include "TimeHelper.hpp"
 
 #include "ProgramDecoder.hpp"
 #include "EmulatorMMIO.hpp"
@@ -25,8 +26,8 @@ using namespace mips_emulator;
 class CEmulatorHost {
     using CMMIO = CEmulatorMMIO<CEmulatorHost>;
     public:
-        CEmulatorHost(TJBox_UInt64 iMemorySize, uint32_t iEntryPoint);
-        [[nodiscard]] static CEmulatorHost* CreateFromProgram(TJBox_Value iProgramString);
+        CEmulatorHost(TJBox_Float64 iSampleRate, TJBox_UInt64 iMemorySize, uint32_t iEntryPoint);
+        [[nodiscard]] static CEmulatorHost* CreateFromProgram(TJBox_Float64 iSampleRate, TJBox_Value iProgramString);
 
         Terminal& GetTerminal() { return fTerminal; };
 
@@ -40,17 +41,14 @@ class CEmulatorHost {
         bool MustLoadProgram(); 
         bool StartNextEvent();
 
-        void PollEvents(const TJBox_PropertyDiff iPropertyDiffs[], TJBox_UInt32 iDiffCount);
-
         RuntimeStaticMemory<CMMIO> fMemory;
+        CEventManager fEventManager;
         CEmulatorThread fMainThread;  // Registerfile to be used for main
         CEmulatorThread fEventThread; // Registerfile used by the current event
-
-        CEventManager fEventManager;
+        
         Terminal fTerminal;
         CNoteHelper fNoteHelper;
-
-        uint32_t index = 0; // TEMPORARY INDEX FOR ARTIFICIAL STEP
+        CTimeHelper fTimeHelper;
 
         // JBox property references
         TJBox_ObjectRef fCustomPropertiesRef;
