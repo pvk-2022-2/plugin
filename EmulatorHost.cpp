@@ -2,14 +2,14 @@
 #include "UserIO.h"
 #include "Constants.h"
 
-CEmulatorHost* CEmulatorHost::CreateFromProgram(TJBox_Value iProgramString) {
+CEmulatorHost* CEmulatorHost::CreateFromProgram(TJBox_Float64 iSampleRate, TJBox_Value iProgramString) {
 	uint32_t bufsize = JBox_GetStringLength(iProgramString);
 	vector<uint8_t> content = DecodeParameterString(iProgramString);
 	// TEMPORARY HEX DEOCODER
 	
 	// TODO Load elf, replace buf with memory content
 	uint32_t memsize = 0x10000; 
-	auto emulator = new CEmulatorHost(memsize, 0);
+	auto emulator = new CEmulatorHost(iSampleRate, memsize, 0);
 
 	// Put result into memory
 	for(int i = 0; i < bufsize; i++)
@@ -19,9 +19,10 @@ CEmulatorHost* CEmulatorHost::CreateFromProgram(TJBox_Value iProgramString) {
 }
 
 
-CEmulatorHost::CEmulatorHost(TJBox_UInt64 iMemorySize, uint32_t iEntryPoint) :  
+CEmulatorHost::CEmulatorHost(TJBox_Float64 iSampleRate, TJBox_UInt64 iMemorySize, uint32_t iEntryPoint) :  
 	fMemory(iMemorySize, make_shared<CMMIO>(this)), 
-	fEventManager(10)
+	fEventManager(10),
+	fTimeHelper(iSampleRate)
 {
 	// Set Property References
 	fCustomPropertiesRef = JBox_GetMotherboardObjectRef("/custom_properties");
@@ -50,6 +51,11 @@ bool CEmulatorHost::HandleMMIOStore(uint32_t iAddress, uint32_t iValue) {
 	}
 	case MMIO_INDEX(MMIO_PUTINT): fTerminal.PutInt(static_cast<int32_t>(iValue)); break;
 	case MMIO_INDEX(MMIO_PUTHEX): fTerminal.PutHex(iValue); break;
+
+	case MMIO_INDEX(MMIO_OUTNOTE): {
+		auto note = *(TJBox_NoteEvent*)(&iValue);
+		JBox_OutputNoteEvent(note);
+	}
 
 	default: return false;
 	}
@@ -114,24 +120,18 @@ uint64_t CEmulatorHost::ExecuteMain(uint64_t iStepCount) {
 	return iStepCount;
 }
 
-void CEmulatorHost::PollEvents(const TJBox_PropertyDiff iPropertyDiffs[], TJBox_UInt32 iDiffCount)
-{
-	fNoteHelper.HandleDiffs(fEventManager, iPropertyDiffs, iDiffCount);
-}
-
 void CEmulatorHost::ProcessBatch(const TJBox_PropertyDiff iPropertyDiffs[], TJBox_UInt32 iDiffCount) {
 	// FIND AND ADD EVENTS
-	PollEvents(iPropertyDiffs, iDiffCount);
+	fNoteHelper.HandleDiffs(fEventManager, iPropertyDiffs, iDiffCount);
+	fTimeHelper.HandleBatch(fEventManager, iPropertyDiffs, iDiffCount);
 
 	// RUN INSTRUCTIONS
-	if(index++ % 250 != 0) return;
-	
-	uint64_t steps = 100;
+	uint64_t steps = 1000;
 
 	steps = ExecuteEvents(steps);
 
 	// Run remaining instructions on the main thread
-	steps = ExecuteMain(steps);
+	ExecuteMain(steps);
 	
 	// POSTPROCESS BATCH
 	fTerminal.SendProperties();

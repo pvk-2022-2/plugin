@@ -22,7 +22,7 @@ void* JBox_Export_CreateNativeObject(const char iOperation[], const TJBox_Value 
 
 	const TJBox_Float64 sampleRate = JBox_GetNumber(iParams[0]);
 
-	return CEmulatorHost::CreateFromProgram(iParams[2]);
+	return CEmulatorHost::CreateFromProgram(sampleRate, iParams[2]);
 }
 
 /** 
