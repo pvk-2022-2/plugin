@@ -8,7 +8,9 @@
 
 #include "EventManager.hpp"
 #include "EmulatorThread.hpp"
+
 #include "Terminal.h"
+#include "NoteHelper.hpp"
 
 #include "ProgramDecoder.hpp"
 #include "EmulatorMMIO.hpp"
@@ -38,12 +40,15 @@ class CEmulatorHost {
         bool MustLoadProgram(); 
         bool StartNextEvent();
 
+        void PollEvents(const TJBox_PropertyDiff iPropertyDiffs[], TJBox_UInt32 iDiffCount);
+
         RuntimeStaticMemory<CMMIO> fMemory;
         CEmulatorThread fMainThread;  // Registerfile to be used for main
         CEmulatorThread fEventThread; // Registerfile used by the current event
 
         CEventManager fEventManager;
         Terminal fTerminal;
+        CNoteHelper fNoteHelper;
 
         uint32_t index = 0; // TEMPORARY INDEX FOR ARTIFICIAL STEP
 

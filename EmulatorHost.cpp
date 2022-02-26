@@ -77,6 +77,7 @@ bool CEmulatorHost::StartNextEvent() {
 	if (!fEventManager.GetNextEvent(event)) 
 		return false;
 
+
 	fEventThread.Start(event);
 	return true;
 }
@@ -90,8 +91,10 @@ uint64_t CEmulatorHost::ExecuteEvents(uint64_t iStepCount) {
 		if (fEventThread.HasErrored())
 			fTerminal.Puts("EVENT CRASHED :((((\n");
 
+		/*
 		if (fEventThread.HasFinished())
 			fTerminal.Puts("EVENT FINISHED :))))\n");
+		*/
 	}
 
 	// Return remaining steps
@@ -111,12 +114,18 @@ uint64_t CEmulatorHost::ExecuteMain(uint64_t iStepCount) {
 	return iStepCount;
 }
 
-void CEmulatorHost::ProcessBatch(const TJBox_PropertyDiff iPropertyDiffs[], TJBox_UInt32 iDiffCount) {
-	if(index++ % 250 != 0) return;
+void CEmulatorHost::PollEvents(const TJBox_PropertyDiff iPropertyDiffs[], TJBox_UInt32 iDiffCount)
+{
+	fNoteHelper.HandleDiffs(fEventManager, iPropertyDiffs, iDiffCount);
+}
 
+void CEmulatorHost::ProcessBatch(const TJBox_PropertyDiff iPropertyDiffs[], TJBox_UInt32 iDiffCount) {
 	// FIND AND ADD EVENTS
+	PollEvents(iPropertyDiffs, iDiffCount);
 
 	// RUN INSTRUCTIONS
+	if(index++ % 250 != 0) return;
+	
 	uint64_t steps = 100;
 
 	steps = ExecuteEvents(steps);

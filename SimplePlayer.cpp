@@ -99,8 +99,6 @@ CSimplePlayer::CSimplePlayer(TJBox_Float64 iSampleRate) :
 	TJBox_ObjectRef denominatorNoteCVRef = JBox_GetMotherboardObjectRef("/cv_inputs/denominator_note_cv");
 	fDenominatorNoteCVInputRef = JBox_MakePropertyRef(denominatorNoteCVRef, "value");
 	fDenominatorNoteCVConnectedRef = JBox_MakePropertyRef(denominatorNoteCVRef, "connected");
-
-	index = 0;
 }
 
 void CSimplePlayer::HandleDiffs(const TJBox_PropertyDiff iPropertyDiffs[], TJBox_UInt32 iDiffCount)

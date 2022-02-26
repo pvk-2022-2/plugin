@@ -29,7 +29,7 @@ class CEventManager {
         }
 
     private:
-        uint32_t fEventVectorTable[EVENTID_MAX];
+        uint32_t fEventVectorTable[EVENTID_MAX] = {};
         uint32_t GetEventVector(uint32_t iEventID) {
             if(iEventID >= EVENTID_MAX) return 0;
             return fEventVectorTable[iEventID];
