@@ -35,8 +35,8 @@ bool CEmulatorHost::HandleMMIOStore(uint32_t iAddress, uint32_t iValue) {
 	{
 	
 	case MMIO_INDEX(MMIO_REGISTER_EVENT): {
-		const uint32_t eventID = EVENT_PARSE_ID(iValue);
-		const uint32_t eventAddress = EVENT_PARSE_ADDRESS(iValue);
+		const uint32_t eventID = parse_event_id(iValue);
+		const uint32_t eventAddress = parse_event_address(iValue);
 
 		fEventManager.SetEventVector(eventID, eventAddress);
 		break;
@@ -53,8 +53,11 @@ bool CEmulatorHost::HandleMMIOStore(uint32_t iAddress, uint32_t iValue) {
 	case MMIO_INDEX(MMIO_PUTHEX): fTerminal.PutHex(iValue); break;
 
 	case MMIO_INDEX(MMIO_OUTNOTE): {
-		auto note = *(TJBox_NoteEvent*)(&iValue);
-		JBox_OutputNoteEvent(note);
+		NoteStruct ns;
+		unpack_note(iValue, ns);
+
+		fNoteHelper.SendNoteEvent(ns.note_number, ns.velocity, ns.frame);
+		break;
 	}
 
 	default: return false;
@@ -94,8 +97,9 @@ uint64_t CEmulatorHost::ExecuteEvents(uint64_t iStepCount) {
 		iStepCount = fEventThread.StepN(iStepCount, fMemory);
 		if (iStepCount == 0) break;
 		
-		if (fEventThread.HasErrored())
+		if (fEventThread.HasErrored()) {
 			fTerminal.Puts("EVENT CRASHED :((((\n");
+		}
 
 		/*
 		if (fEventThread.HasFinished())

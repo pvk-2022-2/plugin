@@ -13,7 +13,7 @@ void SendNoteOffEvent(uint8_t iNoteNumber, uint16_t iFrameIndex)
 	JBox_OutputNoteEvent(event);
 }
 
-void SendNoteOnEvent(uint8_t iNoteNumber, uint8_t iVelocity, uint16_t iFrameIndex)
+void CNoteHelper::SendNoteEvent(uint8_t iNoteNumber, uint8_t iVelocity, uint16_t iFrameIndex)
 {
 	if(iNoteNumber & 0x80) 
 		return;
