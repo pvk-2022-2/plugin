@@ -29,8 +29,8 @@ void* JBox_Export_CreateNativeObject(const char iOperation[], const TJBox_Value 
  * @brief	This is the callback we get from Reason/Recon to do our audio rendering
  */
 void JBox_Export_RenderRealtime(void* privateState, const TJBox_PropertyDiff iPropertyDiffs[], TJBox_UInt32 iDiffCount) {
-
-	JBOX_ASSERT(privateState != nullptr);
+	if(privateState == nullptr)
+		return;
 
 	CEmulatorHost* pi = static_cast<CEmulatorHost*>(privateState);
 	pi->ProcessBatch(iPropertyDiffs, iDiffCount);
