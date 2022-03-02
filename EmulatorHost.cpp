@@ -1,28 +1,38 @@
 #include "EmulatorHost.hpp"
 #include "UserIO.h"
 #include "Constants.h"
+#include "ELFLoader.hpp"
+
 
 CEmulatorHost* CEmulatorHost::CreateFromProgram(TJBox_Float64 iSampleRate, TJBox_Value iProgramString) {
-	uint32_t bufsize = JBox_GetStringLength(iProgramString);
 	vector<uint8_t> content = DecodeParameterString(iProgramString);
-	// TEMPORARY HEX DEOCODER
-	
-	// TODO Load elf, replace buf with memory content
-	uint32_t memsize = 0x10000; 
-	auto emulator = new CEmulatorHost(iSampleRate, memsize, 0);
 
-	// Put result into memory
-	for(int i = 0; i < bufsize; i++)
-		emulator->fMemory.get_memory()[i] = (uint8_t)content[i];
+	// Create empty emulator if no program was provided
+	if(content.size() == 0)
+		return nullptr;
+
+	Executable exec;
+	auto res = load_elf32(content.data(), &exec);
+
+	if(res == ELFResult::ok)
+		return new CEmulatorHost(iSampleRate, exec.executable, exec.entry);
+
+	JBOX_TRACE("COULD NOT LOAD ELF");
+
+	// if elf could not be loaded, assume it's a pure .text segment for asm
+	content.resize(0x10000, 0);
+	auto emulator = new CEmulatorHost(iSampleRate, content, 0);
 
 	return emulator;
 }
 
 
-CEmulatorHost::CEmulatorHost(TJBox_Float64 iSampleRate, TJBox_UInt64 iMemorySize, uint32_t iEntryPoint) :  
-	fMemory(iMemorySize, make_shared<CMMIO>(this)), 
+CEmulatorHost::CEmulatorHost(TJBox_Float64 iSampleRate, vector<uint8_t>& iMemory, uint32_t iEntryPoint) :  
+	fMemory(iMemory, make_shared<CMMIO>(this)), 
 	fEventManager(10),
-	fTimeHelper(iSampleRate)
+	fTimeHelper(iSampleRate),
+	fMainThread(0x1000),
+	fEventThread(0x2000) // TEMPORARY STACKS
 {
 	// Set Property References
 	fCustomPropertiesRef = JBox_GetMotherboardObjectRef("/custom_properties");
@@ -45,7 +55,7 @@ bool CEmulatorHost::HandleMMIOStore(uint32_t iAddress, uint32_t iValue) {
 	// TODO IMPLEMENT PUTS WITHOUT MEMORY LEAK
 	case MMIO_INDEX(MMIO_PUTCHAR): {
 		if(iValue != 0) // AVOID KILLING THE TERMINAL
-			fTerminal.Putch(static_cast<char> (iValue)); 
+			fTerminal.Putch(iValue); 
 
 		break;
 	}
@@ -113,10 +123,22 @@ uint64_t CEmulatorHost::ExecuteEvents(uint64_t iStepCount) {
 
 uint64_t CEmulatorHost::ExecuteMain(uint64_t iStepCount) {
 	if (!fMainThread.IsRunning()) return iStepCount;
+
+	// Store pc and instruction for debugging purposes (assumes step = 1)
+	uint32_t pc = fMainThread.GetRegisterFile().get_pc();
+	uint32_t instr = pc < fMemory.get_size() ? ((uint32_t*)fMemory.get_memory())[pc >> 2] : 0;
+
 	iStepCount = fMainThread.StepN(iStepCount, fMemory);
 
-	if(fMainThread.HasErrored())
-		fTerminal.Puts("MAIN THREAD BROKE\n");
+	if(fMainThread.HasErrored()) {
+		fTerminal.Puts("MAIN THREAD BROKE\nINSTR: ");
+
+		// Print instruction info
+		fTerminal.PutHex(instr);
+		fTerminal.Puts(" at ");
+		fTerminal.PutHex(pc);
+		fTerminal.Puts("\n");
+	}
 
 	if(fMainThread.HasFinished())
 		fTerminal.Puts("MAIN THREAD FINISHED\n");
@@ -130,12 +152,12 @@ void CEmulatorHost::ProcessBatch(const TJBox_PropertyDiff iPropertyDiffs[], TJBo
 	fTimeHelper.HandleBatch(fEventManager, iPropertyDiffs, iDiffCount);
 
 	// RUN INSTRUCTIONS
-	uint64_t steps = 1000;
-
+	uint64_t steps = 1; // Use 1 for debugging
 	steps = ExecuteEvents(steps);
 
 	// Run remaining instructions on the main thread
 	ExecuteMain(steps);
+
 	
 	// POSTPROCESS BATCH
 	fTerminal.SendProperties();

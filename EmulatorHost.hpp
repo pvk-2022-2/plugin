@@ -26,7 +26,7 @@ using namespace mips_emulator;
 class CEmulatorHost {
     using CMMIO = CEmulatorMMIO<CEmulatorHost>;
     public:
-        CEmulatorHost(TJBox_Float64 iSampleRate, TJBox_UInt64 iMemorySize, uint32_t iEntryPoint);
+        CEmulatorHost(TJBox_Float64 iSampleRate, vector<uint8_t>& iMemory, uint32_t iEntryPoint);
         [[nodiscard]] static CEmulatorHost* CreateFromProgram(TJBox_Float64 iSampleRate, TJBox_Value iProgramString);
 
         Terminal& GetTerminal() { return fTerminal; };
