@@ -1,13 +1,16 @@
 #include "Terminal.h"
 
-Terminal::Terminal() {
+CTerminal::CTerminal() {
   TJBox_ObjectRef customPropertiesRef =
       JBox_GetMotherboardObjectRef("/custom_properties");
   fTextOutRef = JBox_MakePropertyRef(customPropertiesRef, "text_out_buffer");
 }
 
-void Terminal::SendProperties() {
+void CTerminal::SendProperties() {
   if (!fDirty)
+    return;
+
+  if (fFramesSinceSend++ < fMinFrameWait)
     return;
 
   // Copy string to outbuffer
@@ -21,15 +24,13 @@ void Terminal::SendProperties() {
     textIndex = (textIndex + 1) % kTextBufferLength;
   }
 
-  // Set Remaining to zero
-  /*while(currentLength < kOutBufferLength)
-      fOutBuffer[currentLength++] = 0;
-  */
-
   JBox_SetRTStringData(fTextOutRef, currentLength, fOutBuffer);
+
+  fDirty = false;
+  fFramesSinceSend = 0;
 }
 
-void Terminal::ScrollDown() {
+void CTerminal::ScrollDown() {
   fDirty = true;
 
   while (fTextBuffer[fOutIndex] != '\n') {
@@ -43,7 +44,7 @@ void Terminal::ScrollDown() {
   fOutIndex++;
 }
 
-void Terminal::Putch(const char c) {
+void CTerminal::Putch(const char c) {
   fDirty = true;
 
   fTextBuffer[fBufferIndex] = c;
@@ -67,78 +68,77 @@ void Terminal::Putch(const char c) {
 
     ScrollDown();
   }
+
+  fTextBuffer[fBufferIndex] = 0;
 }
 
-void Terminal::Puts(const char *s) {
+void CTerminal::Puts(const char *s) {
   while (*s)
     Putch(*(s++));
-
-  // Null Terminate
-  fTextBuffer[fBufferIndex] = 0; 
 }
 
-void Terminal::PutHexLen(TJBox_UInt64 iValue, TJBox_UInt64 iNibbles) {
+void CTerminal::PutHexLen(uint64_t iValue, uint64_t iNibbles) {
+  Putch('0');
+  Putch('x');
+
+  for (TJBox_UInt64 i = 0; i < iNibbles; i++) {
+    const int k = (iNibbles - 1 - i) * 4;
+    const TJBox_UInt8 num = (iValue & (0xFUL << k)) >> k;
+    char c = '0' + num;
+
+    if (num >= 10)
+      c = 'A' + num - 10;
+
+    Putch(c);
+  }
+}
+
+void CTerminal::PutHex(uint64_t iValue) {
+  // find largest nonzero nibble
+  TJBox_UInt64 nibbles = 16;
+  while (nibbles > 2 && !(iValue & (0xFUL << 4 * --nibbles)))
+    ;
+
+  PutHexLen(iValue, ++nibbles);
+}
+
+void CTerminal::PutUInt(uint64_t iValue) {
+  if (iValue == 0) {
     Putch('0');
-    Putch('x');
+    return;
+  }
 
-    for (TJBox_UInt64 i = 0; i < iNibbles; i++) {
-        const int k = (iNibbles - 1 - i) * 4;
-        const TJBox_UInt8 num = (iValue & (0xFUL << k)) >> k;
-        char c = '0' + num;
+  char buf[21];
+  char *ptr = buf;
 
-        if (num >= 10) c = 'A' + num - 10;
+  while (iValue != 0) {
+    TJBox_UInt8 rem = iValue % 10;
+    *ptr = '0' + rem;
+    ++ptr;
+    iValue /= 10;
+  }
 
-        Putch(c);
-    }
+  *ptr = '\0';
+
+  // Reverse string
+  char *begin = buf;
+  char *end = ptr - 1;
+  while (begin < end) {
+    char tmp = *begin;
+    *begin = *end;
+    *end = tmp;
+    ++begin;
+    --end;
+  }
+
+  Puts(buf);
 }
 
-void Terminal::PutHex(TJBox_UInt64 iValue) {
-    // find largest nonzero nibble
-    TJBox_UInt64 nibbles = 16;
-    while (nibbles > 2 && !(iValue & (0xFUL << 4 * --nibbles)))
-        ;
-
-    PutHexLen(iValue, ++nibbles);
-}
-
-
-void Terminal::PutUInt(TJBox_UInt64 iValue) {
-    if (iValue == 0) {
-        Putch('0');
-        return;
-    }
-
-    char buf[21];
-    char* ptr = buf;
-
-    while (iValue != 0) {
-        TJBox_UInt8 rem = iValue % 10;
-        *ptr = '0' + rem;
-        ++ptr;
-        iValue /= 10;
-    }
-
-    *ptr = '\0';
-
-    // Reverse string
-    char* begin = buf;
-    char* end = ptr - 1;
-    while (begin < end) {
-        char tmp = *begin;
-        *begin = *end;
-        *end = tmp;
-        ++begin;
-        --end;
-    }
-
-    Puts(buf);
-}
-
-void Terminal::PutInt(TJBox_Int64 iValue) {
+void CTerminal::PutInt(int64_t iValue) {
   if (iValue < 0) {
-      Putch('-');
-      PutUInt(-iValue);
-      return;
+    Putch('-');
+    PutUInt(-iValue);
+    return;
   }
 
   PutUInt(iValue);
