@@ -126,7 +126,7 @@ uint64_t CEmulatorHost::ExecuteMain(uint64_t iStepCount) {
 
 	// Store pc and instruction for debugging purposes (assumes step = 1)
 	uint32_t pc = fMainThread.GetRegisterFile().get_pc();
-	uint32_t instr = ((uint32_t*)fMemory.get_memory())[pc >> 2];
+	uint32_t instr = pc < fMemory.get_size() ? ((uint32_t*)fMemory.get_memory())[pc >> 2] : 0;
 
 	iStepCount = fMainThread.StepN(iStepCount, fMemory);
 
