@@ -29,7 +29,7 @@ class CEmulatorHost {
         CEmulatorHost(TJBox_Float64 iSampleRate, vector<uint8_t>& iMemory, uint32_t iEntryPoint);
         [[nodiscard]] static CEmulatorHost* CreateFromProgram(TJBox_Float64 iSampleRate, TJBox_Value iProgramString);
 
-        Terminal& GetTerminal() { return fTerminal; };
+        CTerminal& GetTerminal() { return fTerminal; };
 
         void ProcessBatch(const TJBox_PropertyDiff iPropertyDiffs[], TJBox_UInt32 iDiffCount);
         bool HandleMMIOStore(uint32_t iAddress, uint32_t iValue);
@@ -46,7 +46,7 @@ class CEmulatorHost {
         CEmulatorThread fMainThread;  // Registerfile to be used for main
         CEmulatorThread fEventThread; // Registerfile used by the current event
         
-        Terminal fTerminal;
+        CTerminal fTerminal;
         CNoteHelper fNoteHelper;
         CTimeHelper fTimeHelper;
 

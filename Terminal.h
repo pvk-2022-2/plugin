@@ -1,38 +1,49 @@
 #pragma once
 
 #include "Jukebox.h"
+#include <cstddef>
+#include <cstdint>
 
-class Terminal {
-private:
-  static const TJBox_SizeT kTextBufferLength = 2048;
-  static const TJBox_SizeT kOutBufferLength = 1024;
-
-  static const TJBox_UInt64 kTerminalWidth = 50;
-  static const TJBox_UInt64 kTerminalHeight = 20;
-
-  static_assert(kOutBufferLength >= kTerminalWidth * kTerminalHeight);
-
-  TJBox_PropertyRef fTextOutRef;
-  TJBox_UInt64 fBufferIndex = 0;
-  TJBox_UInt64 fOutIndex = 0;
-  TJBox_Bool fDirty = false;
-
-  TJBox_UInt64 fTerminalY = 0;
-  TJBox_UInt64 fTerminalX = 0;
-
-  // Potential Optimization, use two mom buffers to skip outbuffer entirely
-  TJBox_UInt8 fTextBuffer[kTextBufferLength];
-  TJBox_UInt8 fOutBuffer[kOutBufferLength];
-
+class CTerminal {
 public:
-  Terminal();
+  CTerminal();
   void Putch(const char c);
   void Puts(const char *s);
-  void PutHexLen(TJBox_UInt64 iValue, TJBox_UInt64 iNibbles);
-  void PutHex(TJBox_UInt64 iValue);
-  void PutUInt(TJBox_UInt64 iValue);
-  void PutInt(TJBox_Int64 iValue);
+  void PutHexLen(uint64_t iValue, uint64_t iNibbles);
+  void PutHex(uint64_t iValue);
+  void PutUInt(uint64_t iValue);
+  void PutInt(int64_t iValue);
 
   void SendProperties();
   void ScrollDown();
+
+private:
+  static const size_t kTextBufferLength = 2048;
+  static const size_t kOutBufferLength = 1024;
+
+  static const size_t kTerminalWidth = 50;
+  static const size_t kTerminalHeight = 20;
+
+  // Make sure entire terminal can be printed.
+  static_assert(kOutBufferLength >= kTerminalWidth * kTerminalHeight);
+
+  TJBox_PropertyRef fTextOutRef;
+  uint64_t fBufferIndex = 0;
+  uint64_t fOutIndex = 0;
+
+  bool fDirty = false;
+
+  // The maximum supported rate of updates to a single value is once every 25
+  // milliseconds. The precision doesnt matter that much since normally you wont
+  // be writing text every frame.
+  static const uint64_t fMinFrameWait =
+      static_cast<uint64_t>(25.0 * 96.0 / 64.0) + 1;
+  uint64_t fFramesSinceSend = 0;
+
+  uint64_t fTerminalY = 0;
+  uint64_t fTerminalX = 0;
+
+  // Potential Optimization, use two mom buffers to skip outbuffer entirely
+  uint8_t fTextBuffer[kTextBufferLength];
+  uint8_t fOutBuffer[kOutBufferLength];
 };
