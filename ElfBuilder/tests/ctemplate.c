@@ -1,9 +1,10 @@
 #define MMIO_MASK  0xFF000000U
 
 typedef unsigned int uint32_t;
+typedef unsigned char uint8_t;
 typedef int int32_t;
 
-volatile uint32_t* putch = (uint32_t*)(MMIO_MASK | 0x100);
+volatile uint8_t* putch = (uint8_t*)(MMIO_MASK | 0x100);
 volatile uint32_t* putint= (uint32_t*)(MMIO_MASK | 0x120);
 volatile uint32_t* puthex= (uint32_t*)(MMIO_MASK | 0x130);
 
