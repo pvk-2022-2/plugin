@@ -2,9 +2,9 @@ from email.policy import default
 import os
 
 """builds a c file into a recon loadable .repatch file."""
-def build_repatch(c_file, output_dest, delete_elf):
+def build_repatch(c_file, output_dest, delete_elf, opt):
     build_dest = os.path.splitext(c_file)[0] + ".elf"
-    build_failed = os.system(f"clang --target=mipsr6el-linux-elf -nostdlib -static -fuse-ld=lld {c_file} -o {build_dest} -O2 -T linker.ld")
+    build_failed = os.system(f"clang --target=mipsr6el-linux-elf -nostdlib -static -fuse-ld=lld {c_file} -o {build_dest} -O{opt} -T linker.ld")
 
     if build_failed:
         print("Compile Error!!! (Bruh)")
@@ -47,6 +47,8 @@ def build_repatch(c_file, output_dest, delete_elf):
     if delete_elf:
         os.remove(build_dest)
 
+    return True
+
 
 if __name__ == "__main__":
     import argparse
@@ -54,10 +56,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser("patchbuild")
     parser.add_argument('cpath', help="c file path")
     parser.add_argument('dest', nargs='?', help="repatch file destination")
+    parser.add_argument('--O', help="Optimization level", default='2')
     parser.add_argument('--rm', action='store_true', help="remove .elf file once finished.")
 
     args = parser.parse_args()
     dest = args.dest if args.dest else (os.path.splitext(args.cpath)[0] + ".repatch")
 
-    exit(build_repatch(args.cpath , dest, args.rm))
+    exit(build_repatch(args.cpath, dest, args.rm, args.O))
     
