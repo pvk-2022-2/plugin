@@ -2,6 +2,7 @@
 
 #include "Jukebox.h"
 #include "EventManager.hpp"
+#include <vector>
 
 class CNoteHelper {
     public:
@@ -12,4 +13,5 @@ class CNoteHelper {
 
     private:
         TJBox_ObjectRef fNoteStates;
+        std::vector<bool> fSentNotes;
 };
