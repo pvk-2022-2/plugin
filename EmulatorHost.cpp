@@ -1,42 +1,69 @@
 #include "EmulatorHost.hpp"
 #include "UserIO.h"
 #include "Constants.h"
-#include "ELFLoader.hpp"
-
 
 CEmulatorHost* CEmulatorHost::CreateFromProgram(TJBox_Float64 iSampleRate, TJBox_Value iProgramString) {
-	vector<uint8_t> content = DecodeParameterString(iProgramString);
+        std::vector<uint8_t> content = DecodeParameterString(iProgramString);
 
 	// Create empty emulator if no program was provided
-	if(content.size() == 0)
-		return nullptr;
+	if(content.size() == 0) return nullptr;
 
+	const char* symbol_names[2] = {"s_main_stack_top", "s_event_stack_top"}; 
 	Executable exec;
-	auto res = load_elf32(content.data(), &exec);
+	auto res = LoadELF32(content.data(), symbol_names, sizeof(symbol_names) / sizeof(char*), exec);
 
-	if(res == ELFResult::ok)
-		return new CEmulatorHost(iSampleRate, exec.executable, exec.entry);
+	switch (res) {
+	case ELFResult::ok:
+	    return new CEmulatorHost(iSampleRate, exec.executable, exec.offset, exec.entry, exec.symbols[0] - 4, exec.symbols[1] - 4);
 
+	case ELFResult::invalid_magic:
+	    JBOX_TRACE("ELF Error: Invalid magic in file");
+	    break;
+
+	case ELFResult::not_32_bits:
+	    JBOX_TRACE("ELF Error: Not a 32-bit executable");
+	    break;
+
+	case ELFResult::big_endian:
+	    JBOX_TRACE("ELF Error: Executable is in big and not little endian format");
+	    break;
+
+	case ELFResult::no_segments:
+	    JBOX_TRACE("ELF Error: No segments were found");
+	    break;
+
+	case ELFResult::no_symbol_table:
+	    JBOX_TRACE("ELF Error: No symbol table was found");
+	    break;
+
+	case ELFResult::no_string_table:
+	    JBOX_TRACE("ELF Error: No string table was found");
+	    break;
+
+	case ELFResult::missing_symbols:
+	    JBOX_TRACE("ELF Error: Not all requested symbols were found");
+	    break;
+
+	default: break;
+	}
+	
 	JBOX_TRACE("COULD NOT LOAD ELF");
 
-	// if elf could not be loaded, assume it's a pure .text segment for asm
+	// If elf could not be loaded, assume it's a pure .text segment for asm
 	content.resize(0x10000, 0);
-	auto emulator = new CEmulatorHost(iSampleRate, content, 0);
-
-	return emulator;
+	return new CEmulatorHost(iSampleRate, content, 0, 0, 0x4000 - 4, 0x2000 - 4);
 }
 
-
-CEmulatorHost::CEmulatorHost(TJBox_Float64 iSampleRate, vector<uint8_t>& iMemory, uint32_t iEntryPoint) :  
-	fMemory(iMemory, make_shared<CMMIO>(this)), 
+CEmulatorHost::CEmulatorHost(TJBox_Float64 iSampleRate, std::vector<uint8_t> iExecutable, uint32_t iOffset, uint32_t iEntry, uint32_t iMainStack, uint32_t iEventStack) :
+	fMemory(iExecutable, iOffset, make_shared<CMMIO>(this)), 
 	fEventManager(10),
 	fTimeHelper(iSampleRate),
-	fMainThread(0x1000),
-	fEventThread(0x2000) // TEMPORARY STACKS
+	fMainThread(iMainStack),
+	fEventThread(iEventStack)
 {
 	// Set Property References
 	fCustomPropertiesRef = JBox_GetMotherboardObjectRef("/custom_properties");
-	fMainThread.Start(iEntryPoint);
+	fMainThread.Start(iEntry);
 }
 
 bool CEmulatorHost::HandleMMIOStore(uint32_t iAddress, uint32_t iValue) {
@@ -125,8 +152,11 @@ uint64_t CEmulatorHost::ExecuteMain(uint64_t iStepCount) {
 	if (!fMainThread.IsRunning()) return iStepCount;
 
 	// Store pc and instruction for debugging purposes (assumes step = 1)
-	uint32_t pc = fMainThread.GetRegisterFile().get_pc();
-	uint32_t instr = pc < fMemory.get_size() ? ((uint32_t*)fMemory.get_memory())[pc >> 2] : 0;
+	const uint32_t pc = fMainThread.GetRegisterFile().get_pc();
+	auto res_instr = fMemory.read_no_mmio<uint32_t>(pc);
+
+	uint32_t instr = res_instr.is_error() ? 0x696969 : res_instr.get_value();
+	
 
 	iStepCount = fMainThread.StepN(iStepCount, fMemory);
 

@@ -1,4 +1,5 @@
 #include "ELFLoader.hpp"
+#include <cstring>
 
 // Macros used to make sure structs are packed to fit the MIPS instruction size
 
@@ -36,6 +37,7 @@ PACKED(struct ELF32FileHeader {
     uint16_t e_phentsize;
     uint16_t e_phnum;
     uint16_t e_shentsize;
+    uint16_t shnum;
     uint16_t e_shstrndx;
 });
 
@@ -52,10 +54,35 @@ PACKED(struct ELF32ProgramHeader {
     uint32_t p_align;
 });
 
-ELFResult load_elf32(const uint8_t* elf_data,
-                            Executable* executable) {
-    const auto file_header =
-        reinterpret_cast<const ELF32FileHeader*>(elf_data);
+PACKED(struct ELF32SectionHeader {
+    static constexpr uint32_t SHT_SYMTAB = 2;
+    static constexpr uint32_t SHT_STRTAB = 3;
+    
+    uint32_t sh_name;
+    uint32_t sh_type;
+    uint32_t sh_flags;
+    uint32_t sh_addr;
+    uint32_t sh_offset;
+    uint32_t sh_size;
+    uint32_t sh_link;
+    uint32_t sh_info;
+    uint32_t sh_addralign;
+    uint32_t sh_entsize;
+});
+
+PACKED(struct ELF32SymbolEntry {
+    static constexpr uint32_t STB_GLOBAL = 1;
+  
+    uint32_t st_name;
+    uint32_t st_value;
+    uint32_t st_size;
+    uint8_t st_info;
+    uint8_t st_other;
+    uint16_t st_shndx;
+});
+
+ELFResult LoadELF32(const uint8_t* iELFData, const char* const* const iSymbolNames, size_t iSymbolNameCount, Executable& oExecutable) {
+    const auto file_header = reinterpret_cast<const ELF32FileHeader*>(iELFData);
 
     // Validate magic numbers in file header
     {
@@ -79,9 +106,8 @@ ELFResult load_elf32(const uint8_t* elf_data,
         return ELFResult::big_endian;
     }
 
-    const auto program_headers =
-        reinterpret_cast<const ELF32ProgramHeader*>(elf_data +
-                                                    file_header->e_phoff);
+    const auto program_headers = reinterpret_cast<const ELF32ProgramHeader*>(
+        iELFData + file_header->e_phoff);
 
     uint32_t low_addr = ~((uint32_t)0);
     uint32_t high_addr = 0;
@@ -117,7 +143,7 @@ ELFResult load_elf32(const uint8_t* elf_data,
         // there is no reason to make a copy if the file size is 0
         if (header->p_filesz > 0) {
             memcpy(&executable_data[header->p_vaddr],
-                   elf_data + header->p_offset, header->p_filesz);
+                   iELFData + header->p_offset, header->p_filesz);
         }
 
         // Zero initialize remaining memory according to ELF spec
@@ -125,9 +151,66 @@ ELFResult load_elf32(const uint8_t* elf_data,
                header->p_memsz - header->p_filesz);
     }
 
-    *executable =
-        Executable{low_addr, file_header->e_entry,
-                   Executable::Endianess::little, executable_data};
+    const auto section_headers = reinterpret_cast<const ELF32SectionHeader*>(
+        iELFData + file_header->e_shoff);
+
+    const ELF32SectionHeader* symtab_header = nullptr;
+    const ELF32SectionHeader* strtab_header = nullptr;
+
+    // Look through sections for symbol table and string table
+    for (int i = 0; i < file_header->shnum; ++i) {
+        const auto header = &section_headers[i];
+
+	switch(header->sh_type) {
+	case ELF32SectionHeader::SHT_SYMTAB:
+            symtab_header = header;
+	    break;
+	case ELF32SectionHeader::SHT_STRTAB:
+            strtab_header = header;
+	    break;
+	} 
+    }
+
+    // Return error if symbol or string table is missing
+    if (symtab_header == nullptr) return ELFResult::no_symbol_table;
+    if (strtab_header == nullptr) return ELFResult::no_string_table;
+
+    const auto strtab =
+        reinterpret_cast<const char*>(iELFData + strtab_header->sh_offset);
+
+    std::vector<uint32_t> symbols(iSymbolNameCount, 0);
+    size_t found_symbols = 0;
+    for (int i = 0; i < symtab_header->sh_size;
+         i += symtab_header->sh_entsize) {
+        const auto entry = reinterpret_cast<const ELF32SymbolEntry*>(
+            iELFData + symtab_header->sh_offset + i);
+
+	// Only look for global symbols
+        if ((entry->st_info >> 4) != ELF32SymbolEntry::STB_GLOBAL) continue;
+
+	// Iterate through the requested symbol names
+	for(int j = 0; j <= iSymbolNameCount; ++j) {
+	  // If symbol was already found look for next symbol
+	  if (symbols[j] != 0) continue;
+
+	  // Check for matching symbol name
+	  if (std::strcmp(iSymbolNames[j], &strtab[entry->st_name]) == 0) {
+	    symbols[j] = entry->st_value;
+
+	    // Exit early if all symbols have been found
+	    if(++found_symbols == iSymbolNameCount) break;
+	  } 
+	}
+
+	// If all symbols have been found, break out of the loop
+	if(found_symbols == iSymbolNameCount) break;
+    }
+
+    // Return error if not all symbols were found
+    if (found_symbols != iSymbolNameCount) return ELFResult::missing_symbols;
+ 
+    oExecutable = Executable{low_addr, file_header->e_entry,
+                             Executable::Endianess::little, symbols, executable_data};
 
     return ELFResult::ok;
 }
