@@ -28,6 +28,7 @@ void CNoteHelper::SendNoteEvent(uint8_t iNoteNumber, uint8_t iVelocity, uint16_t
 
 CNoteHelper::CNoteHelper() {
     fNoteStates = JBox_GetMotherboardObjectRef("/note_states");
+	fSentNotes = std::vector<bool>(128, false);
 }
 
 void CNoteHelper::HandleDiffs(CEventManager& iEventManager, const TJBox_PropertyDiff iPropertyDiffs[], TJBox_UInt32 iDiffCount) {
@@ -37,7 +38,12 @@ void CNoteHelper::HandleDiffs(CEventManager& iEventManager, const TJBox_Property
 			const TJBox_NoteEvent& noteEvent = JBox_AsNoteEvent(propertyDiff);
 			
             // Reason sends off notes to very low notes after pausing and I don't know why
-            if(noteEvent.fNoteNumber <= 8) continue;
+			// We make sure that only played notes can cause off events
+			const bool is_on = noteEvent.fVelocity;
+			if(!is_on && !fSentNotes[noteEvent.fNoteNumber])
+				continue;
+
+			fSentNotes[noteEvent.fNoteNumber] = is_on;
 
             uint32_t eventID = noteEvent.fVelocity ?  EVENTID_NOTEON : EVENTID_NOTEOFF;
             iEventManager.QueueEvent(eventID, (uint32_t)noteEvent.fNoteNumber, (uint32_t)noteEvent.fVelocity);
