@@ -9,6 +9,9 @@ enum class ELFResult : uint8_t {
     not_32_bits,
     big_endian,
     no_segments,
+    no_symbol_table,
+    no_string_table,
+    missing_symbols,
 };
 
 struct Executable {
@@ -20,7 +23,8 @@ struct Executable {
     uint32_t offset;
     uint32_t entry;
     Endianess endianess;
+    std::vector<uint32_t> symbols;
     std::vector<uint8_t> executable;
 };
 
-ELFResult load_elf32(const uint8_t* elf_data, Executable* executable);
+ELFResult LoadELF32(const uint8_t* iELFData, const char* const* const iSymbolNames, size_t iSymbolNameCount, Executable& oExecutable);

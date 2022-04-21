@@ -12,6 +12,7 @@
 #include "Terminal.h"
 #include "NoteHelper.hpp"
 #include "TimeHelper.hpp"
+#include "ELFLoader.hpp"
 
 #include "ProgramDecoder.hpp"
 #include "EmulatorMMIO.hpp"
@@ -26,7 +27,7 @@ using namespace mips_emulator;
 class CEmulatorHost {
     using CMMIO = CEmulatorMMIO<CEmulatorHost>;
     public:
-        CEmulatorHost(TJBox_Float64 iSampleRate, vector<uint8_t>& iMemory, uint32_t iEntryPoint);
+        CEmulatorHost(TJBox_Float64 iSampleRate, std::vector<uint8_t> iExecutable, uint32_t iOffset, uint32_t iEntry, uint32_t iMain_Stack, uint32_t iEventStack);
         [[nodiscard]] static CEmulatorHost* CreateFromProgram(TJBox_Float64 iSampleRate, TJBox_Value iProgramString);
 
         CTerminal& GetTerminal() { return fTerminal; };
