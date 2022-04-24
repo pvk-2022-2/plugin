@@ -5,13 +5,16 @@
 #include <vector>
 
 class CNoteHelper {
-    public:
-        void HandleDiffs(CEventManager& iEventManager, const TJBox_PropertyDiff iPropertyDiffs[], TJBox_UInt32 iDiffCount);
-        void SendNoteEvent(uint8_t iNoteNumber, uint8_t iVelocity, uint16_t iFrameIndex);
-        
-        CNoteHelper();
+public:
+    void HandleDiffs(CEventManager& iEventManager,
+                     const TJBox_PropertyDiff iPropertyDiffs[],
+                     TJBox_UInt32 iDiffCount);
+    void SendNoteEvent(uint8_t iNoteNumber, uint8_t iVelocity,
+                       uint16_t iFrameIndex);
 
-    private:
-        TJBox_ObjectRef fNoteStates;
-        std::vector<bool> fSentNotes;
+    CNoteHelper();
+
+private:
+    TJBox_ObjectRef fNoteStates;
+    std::vector<bool> fSentNotes;
 };
