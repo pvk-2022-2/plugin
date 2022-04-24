@@ -1,21 +1,21 @@
 #pragma once
 #include <stdint.h>
 
-#define MMIO_MASK  0xFF000000U
+#define MMIO_MASK 0xFF000000U
 #define MMIO_INDEX(address) (((address) & ~MMIO_MASK) >> 4)
 
 // Write only MMIO
 #define MMIO_REGISTER_EVENT (MMIO_MASK | 0x010)
-#define MMIO_PUTCHAR        (MMIO_MASK | 0x100)
-#define MMIO_PUTS           (MMIO_MASK | 0x110)
-#define MMIO_PUTINT         (MMIO_MASK | 0x120)
-#define MMIO_PUTHEX         (MMIO_MASK | 0x130)
+#define MMIO_PUTCHAR (MMIO_MASK | 0x100)
+#define MMIO_PUTS (MMIO_MASK | 0x110)
+#define MMIO_PUTINT (MMIO_MASK | 0x120)
+#define MMIO_PUTHEX (MMIO_MASK | 0x130)
 
-#define MMIO_OUTNOTE        (MMIO_MASK | 0x200)
-
+#define MMIO_OUTNOTE (MMIO_MASK | 0x200)
 
 // Event constants so that they can be used in C as well
-inline uint32_t pack_event_reference(const uint32_t event_id, const uint32_t address) {
+inline uint32_t pack_event_reference(const uint32_t event_id,
+                                     const uint32_t address) {
     return (event_id << 24) | (address & 0xFFFFFF);
 }
 

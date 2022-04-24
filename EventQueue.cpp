@@ -1,16 +1,14 @@
 #include "EventQueue.hpp"
 #include <memory>
 
-CEventQueue::CEventQueue(size_t iCapacity) : fCapacity(iCapacity), fHeadIndex(0)
-{
-    fEventBank = (SEvent*) malloc(sizeof(SEvent) * iCapacity);
+CEventQueue::CEventQueue(size_t iCapacity)
+    : fCapacity(iCapacity), fHeadIndex(0) {
+    fEventBank = (SEvent*)malloc(sizeof(SEvent) * iCapacity);
 }
 
 bool CEventQueue::Push(SEvent iEvent) {
-    if (fHeadIndex >= fCapacity - 1) 
-        return false;
-    
-    
+    if (fHeadIndex >= fCapacity - 1) return false;
+
     fEventBank[fHeadIndex] = iEvent;
     fHeadIndex++;
 

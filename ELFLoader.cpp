@@ -19,7 +19,7 @@
 #    error "Unsupported compiler"
 #endif
 
-PACKED(struct ELF32FileHeader { 
+PACKED(struct ELF32FileHeader {
     static constexpr std::size_t EI_CLASS = 4;
     static constexpr std::size_t EI_DATA = 5;
 
@@ -57,7 +57,7 @@ PACKED(struct ELF32ProgramHeader {
 PACKED(struct ELF32SectionHeader {
     static constexpr uint32_t SHT_SYMTAB = 2;
     static constexpr uint32_t SHT_STRTAB = 3;
-    
+
     uint32_t sh_name;
     uint32_t sh_type;
     uint32_t sh_flags;
@@ -72,7 +72,7 @@ PACKED(struct ELF32SectionHeader {
 
 PACKED(struct ELF32SymbolEntry {
     static constexpr uint32_t STB_GLOBAL = 1;
-  
+
     uint32_t st_name;
     uint32_t st_value;
     uint32_t st_size;
@@ -81,7 +81,9 @@ PACKED(struct ELF32SymbolEntry {
     uint16_t st_shndx;
 });
 
-ELFResult LoadELF32(const uint8_t* iELFData, const char* const* const iSymbolNames, size_t iSymbolNameCount, Executable& oExecutable) {
+ELFResult LoadELF32(const uint8_t* iELFData,
+                    const char* const* const iSymbolNames,
+                    size_t iSymbolNameCount, Executable& oExecutable) {
     const auto file_header = reinterpret_cast<const ELF32FileHeader*>(iELFData);
 
     // Validate magic numbers in file header
@@ -161,14 +163,10 @@ ELFResult LoadELF32(const uint8_t* iELFData, const char* const* const iSymbolNam
     for (int i = 0; i < file_header->shnum; ++i) {
         const auto header = &section_headers[i];
 
-	switch(header->sh_type) {
-	case ELF32SectionHeader::SHT_SYMTAB:
-            symtab_header = header;
-	    break;
-	case ELF32SectionHeader::SHT_STRTAB:
-            strtab_header = header;
-	    break;
-	} 
+        switch (header->sh_type) {
+            case ELF32SectionHeader::SHT_SYMTAB: symtab_header = header; break;
+            case ELF32SectionHeader::SHT_STRTAB: strtab_header = header; break;
+        }
     }
 
     // Return error if symbol or string table is missing
@@ -185,32 +183,33 @@ ELFResult LoadELF32(const uint8_t* iELFData, const char* const* const iSymbolNam
         const auto entry = reinterpret_cast<const ELF32SymbolEntry*>(
             iELFData + symtab_header->sh_offset + i);
 
-	// Only look for global symbols
+        // Only look for global symbols
         if ((entry->st_info >> 4) != ELF32SymbolEntry::STB_GLOBAL) continue;
 
-	// Iterate through the requested symbol names
-	for(int j = 0; j <= iSymbolNameCount; ++j) {
-	  // If symbol was already found look for next symbol
-	  if (symbols[j] != 0) continue;
+        // Iterate through the requested symbol names
+        for (int j = 0; j <= iSymbolNameCount; ++j) {
+            // If symbol was already found look for next symbol
+            if (symbols[j] != 0) continue;
 
-	  // Check for matching symbol name
-	  if (std::strcmp(iSymbolNames[j], &strtab[entry->st_name]) == 0) {
-	    symbols[j] = entry->st_value;
+            // Check for matching symbol name
+            if (std::strcmp(iSymbolNames[j], &strtab[entry->st_name]) == 0) {
+                symbols[j] = entry->st_value;
 
-	    // Exit early if all symbols have been found
-	    if(++found_symbols == iSymbolNameCount) break;
-	  } 
-	}
+                // Exit early if all symbols have been found
+                if (++found_symbols == iSymbolNameCount) break;
+            }
+        }
 
-	// If all symbols have been found, break out of the loop
-	if(found_symbols == iSymbolNameCount) break;
+        // If all symbols have been found, break out of the loop
+        if (found_symbols == iSymbolNameCount) break;
     }
 
     // Return error if not all symbols were found
     if (found_symbols != iSymbolNameCount) return ELFResult::missing_symbols;
- 
-    oExecutable = Executable{low_addr, file_header->e_entry,
-                             Executable::Endianess::little, symbols, executable_data};
+
+    oExecutable =
+        Executable{low_addr, file_header->e_entry,
+                   Executable::Endianess::little, symbols, executable_data};
 
     return ELFResult::ok;
 }

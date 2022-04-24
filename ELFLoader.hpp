@@ -27,4 +27,6 @@ struct Executable {
     std::vector<uint8_t> executable;
 };
 
-ELFResult LoadELF32(const uint8_t* iELFData, const char* const* const iSymbolNames, size_t iSymbolNameCount, Executable& oExecutable);
+ELFResult LoadELF32(const uint8_t* iELFData,
+                    const char* const* const iSymbolNames,
+                    size_t iSymbolNameCount, Executable& oExecutable);

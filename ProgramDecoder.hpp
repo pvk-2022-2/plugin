@@ -4,7 +4,6 @@
 
 #include "Jukebox.h"
 
-
 // Decodes a property string to a uint8_t vector
 inline std::vector<uint8_t> DecodeParameterString(TJBox_Value iString) {
     // REPLACE THIS WITH BETTER ENCODING FORMAT LATER
@@ -25,9 +24,9 @@ inline std::vector<uint8_t> DecodeParameterString(TJBox_Value iString) {
     };
 
     std::vector<uint8_t> ret;
-    for(int i = 0; i < stringLength; i += 2) {
+    for (int i = 0; i < stringLength; i += 2) {
         uint8_t val = (parse(i) << 4) | parse(i + 1);
-        ret.push_back(val); 
+        ret.push_back(val);
     }
 
     return ret;
