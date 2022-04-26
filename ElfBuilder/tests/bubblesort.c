@@ -1,29 +1,4 @@
-#define MMIO_MASK  0xFF000000U
-
-typedef unsigned int uint32_t;
-typedef unsigned char uint8_t;
-typedef int int32_t;
-
-volatile uint8_t* putch = (uint8_t*)(MMIO_MASK | 0x100);
-volatile uint32_t* putint= (uint32_t*)(MMIO_MASK | 0x120);
-volatile uint32_t* puthex= (uint32_t*)(MMIO_MASK | 0x130);
-
-void puts(char* str) {
-    #pragma nounroll
-    while(*str)
-        *putch = *str++;
-}
-
-// stolen from http://www.danielvik.com/2010/02/fast-memcpy-in-c.html
-void* memcpy(void* dest, const void* src, uint32_t count) {
-    char* dst8 = (char*)dest;
-    char* src8 = (char*)src;
-
-    while (count--)
-        *dst8++ = *src8++;
-
-    return dest;
-}
+#include "plugin_test.h"
 
 void __start() {
     
@@ -32,6 +7,7 @@ void __start() {
     
     uint32_t swap;
     
+    // Nounroll prevents O2 from predicting test pass 
     #pragma nounroll
     for(int i = 0; i < length; i++)
         for(int j = 0; j < length - i - 1; j++)
@@ -42,8 +18,10 @@ void __start() {
             }
     
     #pragma nounroll
-    for(int i = 0; i < length; i++)
+    for(int i = 0; i < length; i++) {
         *putint = list[i];
+        *putch = ' ';
+    }
 
     *putch = '\n';
 

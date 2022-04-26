@@ -3,8 +3,8 @@ import os
 
 """builds a c file into a recon loadable .repatch file."""
 def build_repatch(c_file, output_dest, delete_elf, opt):
-    build_dest = os.path.splitext(c_file)[0] + ".elf"
-    build_failed = os.system(f"clang --target=mipsr6el-linux-elf -nostdlib -static -fuse-ld=lld {c_file} -o {build_dest} -O{opt} -T linker.ld")
+    build_dest = os.path.splitext(output_dest)[0] + ".elf"
+    build_failed = os.system(f"clang --target=mipsr6el-linux-elf -fno-exceptions -nostdlib -static -fuse-ld=lld {c_file} -o {build_dest} -O{opt} -T linker.ld")
 
     if build_failed:
         print("Compile Error!!! (Bruh)")
