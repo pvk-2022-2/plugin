@@ -8,7 +8,7 @@ if not os.path.exists(build_folder):
     os.mkdir(build_folder)
 
 import patchbuild
-ops = ['0', '2']
+ops = ['0', 'z', '2']
 
 for file in os.listdir(test_folder):
     pathsplit = os.path.splitext(file)
