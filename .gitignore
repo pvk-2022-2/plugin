@@ -1,3 +1,5 @@
 *.plist
 Intermediate-llvm/
 GUI/*
+ElfBuilder/tests/Build/*
+TEST_*
