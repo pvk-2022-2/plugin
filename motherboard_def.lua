@@ -47,6 +47,9 @@ custom_properties = jbox.property_set{
 			text_out_buffer = jbox.string{
 				max_size = 1024
 			},
+			grid_data = jbox.string{
+				max_size = 1024
+			},
 		}
 	},
 }

@@ -13,6 +13,15 @@ front = jbox.panel{
 			display_height_pixels = 180,
 			draw_function = "draw_terminal",
 		},
+        jbox.custom_display {
+			graphics = { node = "Grid" },
+            -- grid_data is data from realtime, while grid_gesture_data is the other way around.
+			values = { "/custom_properties/grid_data","/custom_properties/grid_gesture_data" },
+			display_width_pixels = 180,
+			display_height_pixels = 180,
+
+			draw_function = "draw_grid",
+		},
         jbox.toggle_button{
             graphics = {
                 node = "OnOff",

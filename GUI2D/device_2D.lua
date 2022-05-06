@@ -15,8 +15,13 @@ front = {
 	},
 
     Terminal = {
-        offset = { 600, 50 },
+        offset = { 300, 50 },
         { path = "Terminal" }
+    },
+
+    Grid = {
+        offset = { 2400, 50 },
+        { path = "Grid" }
     },
 
     OnOff = {

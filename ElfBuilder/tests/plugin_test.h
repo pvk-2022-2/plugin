@@ -27,6 +27,20 @@ void register_event(const uint32_t event_id, const uint32_t address) {
     *register_event_mmio = event_reference;
 }
 
+void move_grid_cursor(const uint32_t x, const uint32_t y) {
+    volatile uint32_t* move_cursor_mmio = (uint32_t*)(MMIO_MASK | 0x300);
+    
+    const uint32_t value = x | (y << 16);
+    *move_cursor_mmio = value;
+}
+
+void set_grid_tile(const uint32_t color, const char ch) {
+    volatile uint32_t* set_tile_mmio = (uint32_t*)(MMIO_MASK | 0x310);
+    
+    const uint32_t value = (uint32_t)(ch) | (color << 8);
+    *set_tile_mmio = value;
+}
+
 void puts(char* str) {
     while(*str)
         *putch = *str++;

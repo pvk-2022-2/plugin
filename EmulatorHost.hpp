@@ -10,6 +10,7 @@
 #include "EmulatorThread.hpp"
 
 #include "Terminal.h"
+#include "Grid.h"
 #include "NoteHelper.hpp"
 #include "TimeHelper.hpp"
 #include "ELFLoader.hpp"

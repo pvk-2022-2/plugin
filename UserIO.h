@@ -13,6 +13,9 @@
 
 #define MMIO_OUTNOTE (MMIO_MASK | 0x200)
 
+#define MMIO_MOVEGRIDCURSOR (MMIO_MASK | 0x300)
+#define MMIO_SETGRIDTILE (MMIO_MASK | 0x310)
+
 // Event constants so that they can be used in C as well
 inline uint32_t pack_event_reference(const uint32_t event_id,
                                      const uint32_t address) {

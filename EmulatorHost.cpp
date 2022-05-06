@@ -103,6 +103,20 @@ bool CEmulatorHost::HandleMMIOStore(uint32_t iAddress, uint32_t iValue) {
             fNoteHelper.SendNoteEvent(ns.note_number, ns.velocity, ns.frame);
             break;
         }
+        case MMIO_INDEX(MMIO_MOVEGRIDCURSOR): {
+            const uint32_t x = iValue & 0xFFFF;
+            const uint32_t y = iValue >> 16;
+
+            fGrid.MoveCursor(x, y);
+            break;
+        }
+        case MMIO_INDEX(MMIO_SETGRIDTILE): {
+            uint32_t color = iValue >> 8;
+            char ch = (char)(iValue & 0xFF);
+
+            fGrid.SetTile(color, ch);
+            break;
+        }
 
         default: return false;
     }
@@ -181,9 +195,10 @@ void CEmulatorHost::ProcessBatch(const TJBox_PropertyDiff iPropertyDiffs[],
     // FIND AND ADD EVENTS
     fNoteHelper.HandleDiffs(fEventManager, iPropertyDiffs, iDiffCount);
     fTimeHelper.HandleBatch(fEventManager, iPropertyDiffs, iDiffCount);
+    fGrid.HandleDiffs(fEventManager, iPropertyDiffs, iDiffCount);
 
     // RUN INSTRUCTIONS
-    uint64_t steps = 1; // Use 1 for debugging
+    uint64_t steps = 200; // Use 1 for debugging
     steps = ExecuteEvents(steps);
 
     // Run remaining instructions on the main thread
@@ -191,4 +206,5 @@ void CEmulatorHost::ProcessBatch(const TJBox_PropertyDiff iPropertyDiffs[],
 
     // POSTPROCESS BATCH
     fTerminal.SendProperties();
+    fGrid.SendProperties();
 }
