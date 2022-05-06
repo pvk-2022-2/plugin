@@ -1,6 +1,7 @@
 #include "EmulatorHost.hpp"
 #include "UserIO.h"
 #include "Constants.h"
+#include "Encoding.h"
 
 CEmulatorHost* CEmulatorHost::CreateFromProgram(TJBox_Float64 iSampleRate,
                                                 TJBox_Value iProgramString) {

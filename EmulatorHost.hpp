@@ -14,7 +14,6 @@
 #include "TimeHelper.hpp"
 #include "ELFLoader.hpp"
 
-#include "ProgramDecoder.hpp"
 #include "EmulatorMMIO.hpp"
 
 #include "Jukebox.h"
