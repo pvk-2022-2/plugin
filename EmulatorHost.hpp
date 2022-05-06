@@ -53,6 +53,7 @@ private:
     CEmulatorThread fEventThread; // Registerfile used by the current event
 
     CTerminal fTerminal;
+    CGrid fGrid;
     CNoteHelper fNoteHelper;
     CTimeHelper fTimeHelper;
 

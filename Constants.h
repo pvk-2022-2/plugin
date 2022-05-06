@@ -16,3 +16,4 @@ const TJBox_Tag kNumeratorTag = 101;
 const TJBox_Tag kDenominatorTag = 102;
 
 const TJBox_Tag kProgramTag = 1000;
+const TJBox_Tag kGestureTag = 1001;

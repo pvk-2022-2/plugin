@@ -27,6 +27,7 @@ private:
     void WriteEncodedGridData(uint32_t index, const uint8_t* bytes,
                               uint32_t length);
     uint8_t fGridData[1024];
+    uint8_t fGestureBuffer[32];
 
     // Layout:
     // R G B Character

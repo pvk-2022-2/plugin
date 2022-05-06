@@ -153,11 +153,6 @@ uint64_t CEmulatorHost::ExecuteEvents(uint64_t iStepCount) {
         if (fEventThread.HasErrored()) {
             fTerminal.Puts("EVENT CRASHED :((((\n");
         }
-
-        /*
-        if (fEventThread.HasFinished())
-                fTerminal.Puts("EVENT FINISHED :))))\n");
-        */
     }
 
     // Return remaining steps
@@ -167,16 +162,17 @@ uint64_t CEmulatorHost::ExecuteEvents(uint64_t iStepCount) {
 uint64_t CEmulatorHost::ExecuteMain(uint64_t iStepCount) {
     if (!fMainThread.IsRunning()) return iStepCount;
 
-    // Store pc and instruction for debugging purposes (assumes step = 1)
-    const uint32_t pc = fMainThread.GetRegisterFile().get_pc();
-    auto res_instr = fMemory.read_no_mmio<uint32_t>(pc);
-
-    uint32_t instr = res_instr.is_error() ? 0x696969 : res_instr.get_value();
-
     iStepCount = fMainThread.StepN(iStepCount, fMemory);
 
     if (fMainThread.HasErrored()) {
         fTerminal.Puts("MAIN THREAD BROKE\nINSTR: ");
+
+        // Retrieve last instruction
+        const uint32_t pc = fMainThread.GetRegisterFile().get_pc() - 4;
+        auto res_instr = fMemory.read_no_mmio<uint32_t>(pc);
+
+        uint32_t instr =
+            res_instr.is_error() ? 0x696969 : res_instr.get_value();
 
         // Print instruction info
         fTerminal.PutHex(instr);
@@ -198,7 +194,7 @@ void CEmulatorHost::ProcessBatch(const TJBox_PropertyDiff iPropertyDiffs[],
     fGrid.HandleDiffs(fEventManager, iPropertyDiffs, iDiffCount);
 
     // RUN INSTRUCTIONS
-    uint64_t steps = 200; // Use 1 for debugging
+    uint64_t steps = 200;
     steps = ExecuteEvents(steps);
 
     // Run remaining instructions on the main thread

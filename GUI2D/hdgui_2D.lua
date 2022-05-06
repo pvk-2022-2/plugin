@@ -21,6 +21,7 @@ front = jbox.panel{
 			display_height_pixels = 180,
 
 			draw_function = "draw_grid",
+            gesture_function = "gesture_grid"
 		},
         jbox.toggle_button{
             graphics = {

@@ -13,6 +13,12 @@ volatile uint32_t* puthex= (uint32_t*)(MMIO_MASK | 0x130);
 #define EVENTID_NOTEON 2
 #define EVENTID_NOTEOFF 3
 
+#define EVENTID_GRIDPRESS 8
+#define EVENTID_GRIDRELEASE 9
+
+#define GRID_WIDTH 8
+#define GRID_HEIGHT 8
+
 void play_note(const uint32_t frame, const uint8_t velocity, const uint8_t note_number) {
     const uint32_t note_data = (frame << 16) | (velocity << 8) | (note_number);
     volatile uint32_t* play_note_mmio = (uint32_t*)(MMIO_MASK | 0x200);

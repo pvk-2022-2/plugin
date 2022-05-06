@@ -134,3 +134,94 @@ function draw_grid(property_values, display_info, dirty_rect)
 
 end
 
+-- GRID Gestures
+
+-- gesture protocol:
+-- identifier (0x1) index (0x1) salt (0x1 or 0x2)
+local press_id = "01"
+local release_id = "00"
+
+-- Apply salt to a parameter
+-- this makes it so that duplicate messages will differ
+-- by alternating the length with a padded string
+local function apply_salt(text)
+  if (string.len(text)) % 4 < 2 then
+    return ""
+  else
+    return "00"
+  end
+end
+
+
+local function get_grid_index(x , y, width, height) 
+  -- Check bounds
+  if x < margin_left or y < margin_top or x >= width - margin_left then
+    return nil
+  end
+
+  local grid_x = math.floor((x - margin_left) / square_size)
+  local grid_y = math.floor((y - margin_top ) / square_size)
+
+  local index = grid_x + grid_cols * grid_y
+
+  return index
+end
+
+-- Gesture handling
+function handle_press(property_values, display_info, gesture_info, custom_data)
+  local width = display_info.width
+	local height = display_info.height
+  local x = gesture_info.start_point.x
+  local y = gesture_info.start_point.y
+
+  local index = get_grid_index(x, y, width, height)
+  if index == nil then
+    return {}
+  end
+
+  -- convert to hex
+  index = string.format("%02X", index)
+  property_values[1] = nil -- nil implies no change
+  property_values[2] = press_id .. index .. apply_salt(property_values[2])
+
+  -- return updated values
+  return {
+    gesture_ui_name = jbox.ui_text("text_GridClick"),
+    property_changes= property_values
+  }
+end
+
+function handle_release(property_values, display_info, gesture_info, custom_data)
+  local width = display_info.width
+	local height = display_info.height
+  local x = gesture_info.start_point.x
+  local y = gesture_info.start_point.y
+
+  local index = get_grid_index(x, y, width, height)
+  if index == nil then
+    return {}
+  end
+
+  -- convert to hex
+  index = string.format("%02X", index)
+  property_values[1] = nil -- nil implies no change 
+  property_values[2] = release_id .. index .. apply_salt(property_values[2])
+
+  -- return updated values
+  return {
+    gesture_ui_name = jbox.ui_text("text_GridRelease"),
+    property_changes= property_values
+  }
+end
+
+-- gesture_grid provides reason with the neccesary handlers for each event.
+function gesture_grid(property_values, display_info, gesture_start_point)
+  local gesture_definitions = {
+    handlers = {
+      on_tap = "handle_press",
+      on_release = "handle_release"
+    }
+  }
+
+  return gesture_definitions
+end 

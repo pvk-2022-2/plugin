@@ -34,6 +34,9 @@ inline uint32_t parse_event_id(const uint32_t event_reference) {
 #define EVENTID_NOTEON 2
 #define EVENTID_NOTEOFF 3
 
+#define EVENTID_GRIDPRESS 8
+#define EVENTID_GRIDRELEASE 9
+
 #define EVENTID_MAX 16
 
 // Note/uint32_t packing/unpacking

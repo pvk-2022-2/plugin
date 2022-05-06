@@ -52,6 +52,25 @@ void CGrid::MoveCursor(uint32_t x, uint32_t y) {
 void CGrid::HandleDiffs(CEventManager& iEventManager,
                         const TJBox_PropertyDiff iPropertyDiffs[],
                         TJBox_UInt32 iDiffCount) {
+    for (TJBox_UInt32 i = 0; i < iDiffCount; ++i) {
+        const TJBox_PropertyDiff& diff = iPropertyDiffs[i];
+
+        if (diff.fPropertyRef.fObject == fCustomPropertiesRef &&
+            diff.fPropertyTag == kGestureTag) {
+
+            const uint32_t content_length =
+                DecodeParameterString(diff.fCurrentValue, (char*)fGestureBuffer,
+                                      sizeof(fGestureBuffer));
+            if (!content_length) continue;
+
+            const bool is_press = static_cast<bool>(fGestureBuffer[0]);
+            const uint32_t event_id =
+                is_press ? EVENTID_GRIDPRESS : EVENTID_GRIDRELEASE;
+            const uint8_t index = fGestureBuffer[1];
+
+            iEventManager.QueueEvent(event_id, index);
+        }
+    }
 }
 
 void CGrid::SendProperties() {
