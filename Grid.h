@@ -15,6 +15,8 @@ public:
     void HandleDiffs(CEventManager& iEventManager,
                      const TJBox_PropertyDiff iPropertyDiffs[],
                      TJBox_UInt32 iDiffCount);
+
+    bool HandleMMIOStore(uint32_t iAddress, uint32_t iValue);
     void SendProperties();
 
     // Specify which tile to change

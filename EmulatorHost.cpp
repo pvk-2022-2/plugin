@@ -74,49 +74,12 @@ CEmulatorHost::CEmulatorHost(TJBox_Float64 iSampleRate,
 }
 
 bool CEmulatorHost::HandleMMIOStore(uint32_t iAddress, uint32_t iValue) {
-    // Use index to shorten lookup distance between cases.
-    switch (MMIO_INDEX(iAddress)) {
-        case MMIO_INDEX(MMIO_REGISTER_EVENT): {
-            const uint32_t eventID = parse_event_id(iValue);
-            const uint32_t eventAddress = parse_event_address(iValue);
-
-            fEventManager.SetEventVector(eventID, eventAddress);
-            break;
-        }
-
-        // TODO IMPLEMENT PUTS WITHOUT MEMORY LEAK
-        case MMIO_INDEX(MMIO_PUTCHAR): {
-            if (iValue != 0) // AVOID KILLING THE TERMINAL
-                fTerminal.Putch(iValue);
-
-            break;
-        }
-        case MMIO_INDEX(MMIO_PUTINT):
-            fTerminal.PutInt(static_cast<int32_t>(iValue));
-            break;
-        case MMIO_INDEX(MMIO_PUTHEX): fTerminal.PutHex(iValue); break;
-
-        case MMIO_INDEX(MMIO_OUTNOTE): {
-            NoteStruct ns;
-            unpack_note(iValue, ns);
-
-            fNoteHelper.SendNoteEvent(ns.note_number, ns.velocity, ns.frame);
-            break;
-        }
-        case MMIO_INDEX(MMIO_MOVEGRIDCURSOR): {
-            const uint32_t x = iValue & 0xFFFF;
-            const uint32_t y = iValue >> 16;
-
-            fGrid.MoveCursor(x, y);
-            break;
-        }
-        case MMIO_INDEX(MMIO_SETGRIDTILE): {
-            uint32_t color = iValue >> 8;
-            char ch = (char)(iValue & 0xFF);
-
-            fGrid.SetTile(color, ch);
-            break;
-        }
+    // Pass MMIO operation to corresponding devices
+    switch (MMIO_DEVICE(iAddress)) {
+        case 0: return fEventManager.HandleMMIOStore(iAddress, iValue);
+        case 1: return fTerminal.HandleMMIOStore(iAddress, iValue);
+        case 2: return fNoteHelper.HandleMMIOStore(iAddress, iValue);
+        case 3: return fGrid.HandleMMIOStore(iAddress, iValue);
 
         default: return false;
     }

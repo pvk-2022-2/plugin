@@ -2,6 +2,7 @@
 #include <stdint.h>
 
 #define MMIO_MASK 0xFF000000U
+#define MMIO_DEVICE(address) (((address) & ~MMIO_MASK) >> 8)
 #define MMIO_INDEX(address) (((address) & ~MMIO_MASK) >> 4)
 
 // Write only MMIO

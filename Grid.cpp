@@ -1,6 +1,7 @@
 #include "Grid.h"
 #include "Constants.h"
 #include "Encoding.h"
+#include "UserIO.h"
 
 #include <cstring>
 
@@ -83,4 +84,28 @@ void CGrid::SendProperties() {
 
     fDirty = false;
     fFramesSinceSend = 0;
+}
+
+bool CGrid::HandleMMIOStore(uint32_t iAddress, uint32_t iValue) {
+    switch (MMIO_INDEX(iAddress)) {
+        case MMIO_INDEX(MMIO_MOVEGRIDCURSOR): {
+            const uint32_t x = iValue & 0xFFFF;
+            const uint32_t y = iValue >> 16;
+
+            MoveCursor(x, y);
+            break;
+        }
+
+        case MMIO_INDEX(MMIO_SETGRIDTILE): {
+            uint32_t color = iValue >> 8;
+            char ch = (char)(iValue & 0xFF);
+
+            SetTile(color, ch);
+            break;
+        }
+
+        default: return false;
+    }
+
+    return true;
 }
