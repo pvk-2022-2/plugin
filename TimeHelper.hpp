@@ -16,6 +16,8 @@ public:
                      const TJBox_PropertyDiff iPropertyDiffs[],
                      TJBox_UInt32 iDiffCount);
 
+    bool HandleMMIORead(uint32_t iAddress, uint32_t& oValue);
+
 private:
     TJBox_Float64 ComputeBatchLengthPPQ() const;
     std::pair<TPPQRange, TPPQRange>

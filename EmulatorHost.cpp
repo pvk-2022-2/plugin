@@ -88,8 +88,9 @@ bool CEmulatorHost::HandleMMIOStore(uint32_t iAddress, uint32_t iValue) {
 }
 
 bool CEmulatorHost::HandleMMIORead(uint32_t iAddress, uint32_t& oValue) {
-    switch (MMIO_INDEX(iAddress)) {
-
+    // Pass MMIO operation to corresponding devices
+    switch (MMIO_DEVICE(iAddress)) {
+        case 4: return fTimeHelper.HandleMMIORead(iAddress, oValue);
         default: return false;
     }
 

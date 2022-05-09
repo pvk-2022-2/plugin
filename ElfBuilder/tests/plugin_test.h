@@ -9,9 +9,15 @@ volatile uint8_t* putch = (uint8_t*)(MMIO_MASK | 0x100);
 volatile uint32_t* putint= (uint32_t*)(MMIO_MASK | 0x120);
 volatile uint32_t* puthex= (uint32_t*)(MMIO_MASK | 0x130);
 
+volatile uint32_t* is_playing = (uint32_t*)(MMIO_MASK | 0x400);
+volatile uint32_t* is_enabled = (uint32_t*)(MMIO_MASK | 0x410);
+
 #define EVENTID_BEAT 1
 #define EVENTID_NOTEON 2
 #define EVENTID_NOTEOFF 3
+
+#define EVENTID_ONPLAY 6
+#define EVENTID_ONPAUSE 7
 
 #define EVENTID_GRIDPRESS 8
 #define EVENTID_GRIDRELEASE 9
