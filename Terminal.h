@@ -17,6 +17,9 @@ public:
     void SendProperties();
     void ScrollDown();
 
+    bool HandleMMIOStore(uint32_t iAddress, uint32_t iValue);
+    
+
 private:
     static const size_t kTextBufferLength = 2048;
     static const size_t kOutBufferLength = 1024;

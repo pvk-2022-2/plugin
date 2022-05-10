@@ -140,6 +140,10 @@ void CTimeHelper::ProcessRange(const TPPQRange& iRange,
 void CTimeHelper::HandleBatch(CEventManager& iEventManager,
                               const TJBox_PropertyDiff iPropertyDiffs[],
                               TJBox_UInt32 iDiffCount) {
+
+    // Store player state to find if it was changed
+    bool old_is_playing = fIsPlaying;
+
     // Update player state
     for (TJBox_UInt32 i = 0; i < iDiffCount; ++i) {
         const TJBox_PropertyDiff& diff = iPropertyDiffs[i];
@@ -165,6 +169,12 @@ void CTimeHelper::HandleBatch(CEventManager& iEventManager,
             fIsEnabled = JBox_GetBoolean(diff.fCurrentValue);
     }
 
+    // Playing state changed
+    if (old_is_playing != fIsPlaying) {
+        uint32_t event_id = fIsPlaying ? EVENTID_ONPLAY : EVENTID_ONPAUSE;
+        iEventManager.QueueEvent(event_id);
+    }
+
     const TJBox_Float64 batchLength = ComputeBatchLengthPPQ();
     const std::pair<TPPQRange, TPPQRange> ranges =
         ComputePPQRangesForCurrentBatch(batchLength);
@@ -172,4 +182,16 @@ void CTimeHelper::HandleBatch(CEventManager& iEventManager,
     ProcessRange(ranges.first, iEventManager);
     if (!IsEmptyRange(ranges.second))
         ProcessRange(ranges.second, iEventManager);
+}
+
+bool CTimeHelper::HandleMMIORead(uint32_t iAddress, uint32_t& oValue) {
+    switch (MMIO_INDEX(iAddress)) {
+        case MMIO_INDEX(MMIO_ISPLAYING): oValue = (uint32_t)fIsPlaying; break;
+
+        case MMIO_INDEX(MMIO_ISENABLED): oValue = (uint32_t)fIsEnabled; break;
+
+        default: return false;
+    }
+
+    return true;
 }

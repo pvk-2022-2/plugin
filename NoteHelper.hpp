@@ -12,6 +12,8 @@ public:
     void SendNoteEvent(uint8_t iNoteNumber, uint8_t iVelocity,
                        uint16_t iFrameIndex);
 
+    bool HandleMMIOStore(uint32_t iAddress, uint32_t iValue);
+
     CNoteHelper();
 
 private:

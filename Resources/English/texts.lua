@@ -15,4 +15,6 @@ texts = {
     ["text_BeatNumerator"] = "Numerator",
     ["text_BeatDenominator"] = "Denominator",	
     ["text_GroupNameNotUsed"] = "GroupNameNotUsed",
+    ["text_GridClick"] = "Press Grid Tile",
+    ["text_GridRelease"] = "Released Grid Tile",
 }

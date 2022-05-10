@@ -10,11 +10,11 @@
 #include "EmulatorThread.hpp"
 
 #include "Terminal.h"
+#include "Grid.h"
 #include "NoteHelper.hpp"
 #include "TimeHelper.hpp"
 #include "ELFLoader.hpp"
 
-#include "ProgramDecoder.hpp"
 #include "EmulatorMMIO.hpp"
 
 #include "Jukebox.h"
@@ -53,6 +53,7 @@ private:
     CEmulatorThread fEventThread; // Registerfile used by the current event
 
     CTerminal fTerminal;
+    CGrid fGrid;
     CNoteHelper fNoteHelper;
     CTimeHelper fTimeHelper;
 

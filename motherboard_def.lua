@@ -33,6 +33,10 @@ custom_properties = jbox.property_set{
 				default = "",
 				property_tag = 1000
 			},
+			grid_gesture_data = jbox.string{ -- serves as a channel from grid gesture to c++
+				default = "",
+				property_tag = 1001
+			},
 		},
 	},
 
@@ -45,6 +49,9 @@ custom_properties = jbox.property_set{
 	rt_owner = {
 		properties = {
 			text_out_buffer = jbox.string{
+				max_size = 1024
+			},
+			grid_data = jbox.string{
 				max_size = 1024
 			},
 		}

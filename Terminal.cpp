@@ -1,4 +1,5 @@
 #include "Terminal.h"
+#include "UserIO.h"
 
 CTerminal::CTerminal() {
     TJBox_ObjectRef customPropertiesRef =
@@ -138,4 +139,23 @@ void CTerminal::PutInt(int64_t iValue) {
     }
 
     PutUInt(iValue);
+}
+
+bool CTerminal::HandleMMIOStore(uint32_t iAddress, uint32_t iValue) {
+    switch (MMIO_INDEX(iAddress)) {
+        case MMIO_INDEX(MMIO_PUTCHAR): {
+            // AVOID KILLING THE TERMINAL
+            if (iValue != 0) Putch(iValue);
+
+            break;
+        }
+        case MMIO_INDEX(MMIO_PUTINT):
+            PutInt(static_cast<int32_t>(iValue));
+            break;
+        case MMIO_INDEX(MMIO_PUTHEX): PutHex(iValue); break;
+
+        default: return false;
+    }
+
+    return true;
 }

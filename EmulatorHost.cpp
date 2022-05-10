@@ -1,6 +1,7 @@
 #include "EmulatorHost.hpp"
 #include "UserIO.h"
 #include "Constants.h"
+#include "Encoding.h"
 
 CEmulatorHost* CEmulatorHost::CreateFromProgram(TJBox_Float64 iSampleRate,
                                                 TJBox_Value iProgramString) {
@@ -73,35 +74,12 @@ CEmulatorHost::CEmulatorHost(TJBox_Float64 iSampleRate,
 }
 
 bool CEmulatorHost::HandleMMIOStore(uint32_t iAddress, uint32_t iValue) {
-    // Use index to shorten lookup distance between cases.
-    switch (MMIO_INDEX(iAddress)) {
-        case MMIO_INDEX(MMIO_REGISTER_EVENT): {
-            const uint32_t eventID = parse_event_id(iValue);
-            const uint32_t eventAddress = parse_event_address(iValue);
-
-            fEventManager.SetEventVector(eventID, eventAddress);
-            break;
-        }
-
-        // TODO IMPLEMENT PUTS WITHOUT MEMORY LEAK
-        case MMIO_INDEX(MMIO_PUTCHAR): {
-            if (iValue != 0) // AVOID KILLING THE TERMINAL
-                fTerminal.Putch(iValue);
-
-            break;
-        }
-        case MMIO_INDEX(MMIO_PUTINT):
-            fTerminal.PutInt(static_cast<int32_t>(iValue));
-            break;
-        case MMIO_INDEX(MMIO_PUTHEX): fTerminal.PutHex(iValue); break;
-
-        case MMIO_INDEX(MMIO_OUTNOTE): {
-            NoteStruct ns;
-            unpack_note(iValue, ns);
-
-            fNoteHelper.SendNoteEvent(ns.note_number, ns.velocity, ns.frame);
-            break;
-        }
+    // Pass MMIO operation to corresponding devices
+    switch (MMIO_DEVICE(iAddress)) {
+        case 0: return fEventManager.HandleMMIOStore(iAddress, iValue);
+        case 1: return fTerminal.HandleMMIOStore(iAddress, iValue);
+        case 2: return fNoteHelper.HandleMMIOStore(iAddress, iValue);
+        case 3: return fGrid.HandleMMIOStore(iAddress, iValue);
 
         default: return false;
     }
@@ -110,8 +88,9 @@ bool CEmulatorHost::HandleMMIOStore(uint32_t iAddress, uint32_t iValue) {
 }
 
 bool CEmulatorHost::HandleMMIORead(uint32_t iAddress, uint32_t& oValue) {
-    switch (MMIO_INDEX(iAddress)) {
-
+    // Pass MMIO operation to corresponding devices
+    switch (MMIO_DEVICE(iAddress)) {
+        case 4: return fTimeHelper.HandleMMIORead(iAddress, oValue);
         default: return false;
     }
 
@@ -138,11 +117,6 @@ uint64_t CEmulatorHost::ExecuteEvents(uint64_t iStepCount) {
         if (fEventThread.HasErrored()) {
             fTerminal.Puts("EVENT CRASHED :((((\n");
         }
-
-        /*
-        if (fEventThread.HasFinished())
-                fTerminal.Puts("EVENT FINISHED :))))\n");
-        */
     }
 
     // Return remaining steps
@@ -152,16 +126,17 @@ uint64_t CEmulatorHost::ExecuteEvents(uint64_t iStepCount) {
 uint64_t CEmulatorHost::ExecuteMain(uint64_t iStepCount) {
     if (!fMainThread.IsRunning()) return iStepCount;
 
-    // Store pc and instruction for debugging purposes (assumes step = 1)
-    const uint32_t pc = fMainThread.GetRegisterFile().get_pc();
-    auto res_instr = fMemory.read_no_mmio<uint32_t>(pc);
-
-    uint32_t instr = res_instr.is_error() ? 0x696969 : res_instr.get_value();
-
     iStepCount = fMainThread.StepN(iStepCount, fMemory);
 
     if (fMainThread.HasErrored()) {
         fTerminal.Puts("MAIN THREAD BROKE\nINSTR: ");
+
+        // Retrieve last instruction
+        const uint32_t pc = fMainThread.GetRegisterFile().get_pc() - 4;
+        auto res_instr = fMemory.read_no_mmio<uint32_t>(pc);
+
+        uint32_t instr =
+            res_instr.is_error() ? 0x696969 : res_instr.get_value();
 
         // Print instruction info
         fTerminal.PutHex(instr);
@@ -180,9 +155,10 @@ void CEmulatorHost::ProcessBatch(const TJBox_PropertyDiff iPropertyDiffs[],
     // FIND AND ADD EVENTS
     fNoteHelper.HandleDiffs(fEventManager, iPropertyDiffs, iDiffCount);
     fTimeHelper.HandleBatch(fEventManager, iPropertyDiffs, iDiffCount);
+    fGrid.HandleDiffs(fEventManager, iPropertyDiffs, iDiffCount);
 
     // RUN INSTRUCTIONS
-    uint64_t steps = 1; // Use 1 for debugging
+    uint64_t steps = 200;
     steps = ExecuteEvents(steps);
 
     // Run remaining instructions on the main thread
@@ -190,4 +166,5 @@ void CEmulatorHost::ProcessBatch(const TJBox_PropertyDiff iPropertyDiffs[],
 
     // POSTPROCESS BATCH
     fTerminal.SendProperties();
+    fGrid.SendProperties();
 }

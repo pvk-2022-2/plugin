@@ -1,6 +1,7 @@
 #pragma once
 
 #include "EventQueue.hpp"
+#include "UserIO.h"
 
 class CEventManager {
     using SEvent = CEventQueue::SEvent;
@@ -23,6 +24,21 @@ public:
     bool SetEventVector(uint32_t iEventID, uint32_t iAddress) {
         if (iEventID >= EVENTID_MAX) return false;
         fEventVectorTable[iEventID] = iAddress;
+
+        return true;
+    }
+
+    bool HandleMMIOStore(uint32_t iAddress, uint32_t iValue) {
+        switch (MMIO_INDEX(iAddress)) {
+            case MMIO_INDEX(MMIO_REGISTER_EVENT): {
+                const uint32_t eventID = parse_event_id(iValue);
+                const uint32_t eventAddress = parse_event_address(iValue);
+                SetEventVector(eventID, eventAddress);
+
+                break;
+            }
+            default: return false;
+        }
 
         return true;
     }

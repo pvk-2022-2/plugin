@@ -50,3 +50,18 @@ void CNoteHelper::HandleDiffs(CEventManager& iEventManager,
         }
     }
 }
+
+bool CNoteHelper::HandleMMIOStore(uint32_t iAddress, uint32_t iValue) {
+    switch (MMIO_INDEX(iAddress)) {
+        case MMIO_INDEX(MMIO_OUTNOTE): {
+            NoteStruct ns;
+            unpack_note(iValue, ns);
+
+            SendNoteEvent(ns.note_number, ns.velocity, ns.frame);
+            break;
+        }
+        default: return false;
+    }
+
+    return true;
+}
